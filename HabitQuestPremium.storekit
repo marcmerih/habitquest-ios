@@ -1,0 +1,136 @@
+{
+  "appPolicies" : {
+    "eula" : "",
+    "policies" : [
+      {
+        "locale" : "en_US",
+        "policyText" : "",
+        "policyURL" : ""
+      }
+    ]
+  },
+  "identifier" : "habitquest-premium-storekit",
+  "nonRenewingSubscriptions" : [
+  ],
+  "products" : [
+  ],
+  "settings" : {
+    "_applicationInternalID" : "HQPREMIUM01",
+    "_askToBuyEnabled" : false,
+    "_billingGracePeriodEnabled" : false,
+    "_billingIssuesEnabled" : false,
+    "_disableDialogs" : false,
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 1786929600.0,
+    "_locale" : "en_US",
+    "_renewalBillingIssuesEnabled" : false,
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+    ],
+    "_timeRate" : 0
+  },
+  "subscriptionBundleGroups" : [
+  ],
+  "subscriptionGroups" : [
+    {
+      "id" : "HQPREMIUM-GROUP-01",
+      "localizations" : [
+      ],
+      "name" : "HabitQuest Premium",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+          ],
+          "billingPlans" : [
+            {
+              "billingPlanType" : "BILLED_UPFRONT",
+              "commitmentDisplayPrice" : "6.99",
+              "displayPrice" : "6.99",
+              "internalID" : "HQPREMIUM-MONTHLY-PLAN",
+              "isEnabled" : true
+            }
+          ],
+          "codeOffers" : [
+          ],
+          "displayPrice" : "6.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "HQPREMIUM-MONTHLY-INT",
+          "introductoryOffers" : [
+            {
+              "billingPlanType" : "BILLED_UPFRONT",
+              "displayPrice" : "0.00",
+              "internalID" : "HQPREMIUM-MONTHLY-TRIAL",
+              "numberOfPeriods" : 1,
+              "paymentMode" : "free",
+              "subscriptionPeriod" : "P7D"
+            }
+          ],
+          "localizations" : [
+            {
+              "description" : "Premium tools for calm consistency.",
+              "displayName" : "HabitQuest Premium Monthly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.habitquest.premium.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "HabitQuest Premium Monthly",
+          "subscriptionGroupID" : "HQPREMIUM-GROUP-01",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+          ]
+        },
+        {
+          "adHocOffers" : [
+          ],
+          "billingPlans" : [
+            {
+              "billingPlanType" : "BILLED_UPFRONT",
+              "commitmentDisplayPrice" : "59.99",
+              "displayPrice" : "59.99",
+              "internalID" : "HQPREMIUM-ANNUAL-PLAN",
+              "isEnabled" : true
+            }
+          ],
+          "codeOffers" : [
+          ],
+          "displayPrice" : "59.99",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "HQPREMIUM-ANNUAL-INT",
+          "introductoryOffers" : [
+            {
+              "billingPlanType" : "BILLED_UPFRONT",
+              "displayPrice" : "0.00",
+              "internalID" : "HQPREMIUM-ANNUAL-TRIAL",
+              "numberOfPeriods" : 1,
+              "paymentMode" : "free",
+              "subscriptionPeriod" : "P7D"
+            }
+          ],
+          "localizations" : [
+            {
+              "description" : "Longer-term Premium support for a full year of calm progress.",
+              "displayName" : "HabitQuest Premium Annual",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.habitquest.premium.annual",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "HabitQuest Premium Annual",
+          "subscriptionGroupID" : "HQPREMIUM-GROUP-01",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+          ]
+        }
+      ]
+    }
+  ],
+  "subscriptionSuiteGroups" : [
+  ],
+  "version" : {
+    "major" : 6,
+    "minor" : 3
+  }
+}

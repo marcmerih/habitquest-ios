@@ -1,0 +1,1029 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 71;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1D6058900D05DD3D006BFB71 /* HabitQuestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6058900D05DD3D006BFB61 /* HabitQuestApp.swift */; };
+		1D6058900D05DD3D006BFB72 /* AppRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6058900D05DD3D006BFB62 /* AppRootView.swift */; };
+		1D6058900D05DD3D006BFB73 /* AuthLandingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6058900D05DD3D006BFB63 /* AuthLandingView.swift */; };
+		1D6058900D05DD3D006BFB74 /* HabitQuestTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6058900D05DD3D006BFB64 /* HabitQuestTheme.swift */; };
+		1D6058900D05DD3D006BFB75 /* LaunchScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6058900D05DD3D006BFB65 /* LaunchScreenView.swift */; };
+		1D6058900D05DD3D006BFB83 /* OnboardingFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6058900D05DD3D006BFB81 /* OnboardingFlowView.swift */; };
+		1D6058900D05DD3D006BFB84 /* MainShellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D6058900D05DD3D006BFB82 /* MainShellView.swift */; };
+		A20000000000000000000001 /* HabitQuest/App/HabitQuestEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000001 /* HabitQuest/App/HabitQuestEnvironment.swift */; };
+		A20000000000000000000002 /* HabitQuest/Features/Shared/FeaturePlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000002 /* HabitQuest/Features/Shared/FeaturePlaceholderView.swift */; };
+		A20000000000000000000003 /* HabitQuest/Features/Today/TodayFeatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000003 /* HabitQuest/Features/Today/TodayFeatureView.swift */; };
+		A20000000000000000000004 /* HabitQuest/Features/Habits/HabitsFeatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000004 /* HabitQuest/Features/Habits/HabitsFeatureView.swift */; };
+		A20000000000000000000005 /* HabitQuest/Features/Analytics/AnalyticsFeatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000005 /* HabitQuest/Features/Analytics/AnalyticsFeatureView.swift */; };
+		A20000000000000000000006 /* HabitQuest/Features/Profile/ProfileFeatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000006 /* HabitQuest/Features/Profile/ProfileFeatureView.swift */; };
+		A20000000000000000000007 /* HabitQuest/Domain/HabitModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000007 /* HabitQuest/Domain/HabitModels.swift */; };
+		A20000000000000000000008 /* HabitQuest/Domain/HabitSchedulingEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000008 /* HabitQuest/Domain/HabitSchedulingEngine.swift */; };
+		A20000000000000000000009 /* HabitQuest/Domain/HabitProgressCalculators.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000009 /* HabitQuest/Domain/HabitProgressCalculators.swift */; };
+		A2000000000000000000000A /* HabitQuest/Persistence/HabitRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000000A /* HabitQuest/Persistence/HabitRepository.swift */; };
+		A2000000000000000000000B /* HabitQuest/Persistence/LocalHabitRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000000B /* HabitQuest/Persistence/LocalHabitRepository.swift */; };
+		A2000000000000000000000C /* HabitQuest/Services/AppServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000000C /* HabitQuest/Services/AppServices.swift */; };
+		A2000000000000000000000D /* HabitQuestTests/DomainLayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000000D /* HabitQuestTests/DomainLayerTests.swift */; };
+		A2000000000000000000000E /* HabitQuest/Persistence/HabitSwiftDataModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000000E /* HabitQuest/Persistence/HabitSwiftDataModels.swift */; };
+		A2000000000000000000000F /* HabitQuestTests/LocalPersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000000F /* HabitQuestTests/LocalPersistenceTests.swift */; };
+		A20000000000000000000010 /* HabitQuest/DesignSystem/HabitQuestDesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000010 /* HabitQuest/DesignSystem/HabitQuestDesignSystem.swift */; };
+		A20000000000000000000011 /* HabitQuest/DesignSystem/HabitQuestDesignComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000011 /* HabitQuest/DesignSystem/HabitQuestDesignComponents.swift */; };
+		A20000000000000000000012 /* HabitQuest/DesignSystem/HabitQuestLiquidGlass.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000012 /* HabitQuest/DesignSystem/HabitQuestLiquidGlass.swift */; };
+		A20000000000000000000013 /* HabitQuest/Features/Habits/HabitManagementViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000013 /* HabitQuest/Features/Habits/HabitManagementViews.swift */; };
+		A20000000000000000000014 /* HabitQuest/Domain/DailyHabitInstanceEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000014 /* HabitQuest/Domain/DailyHabitInstanceEngine.swift */; };
+		A20000000000000000000015 /* HabitQuest/Persistence/DailyHabitStateStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000015 /* HabitQuest/Persistence/DailyHabitStateStore.swift */; };
+		A20000000000000000000016 /* HabitQuestTests/DailyHabitInstanceEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000016 /* HabitQuestTests/DailyHabitInstanceEngineTests.swift */; };
+		A20000000000000000000017 /* HabitQuest/Features/Today/TodayDeckViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000017 /* HabitQuest/Features/Today/TodayDeckViews.swift */; };
+		A20000000000000000000018 /* HabitQuest/Persistence/CompletionEventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000018 /* HabitQuest/Persistence/CompletionEventStore.swift */; };
+		A20000000000000000000019 /* HabitQuest/Services/HabitCompletionProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000019 /* HabitQuest/Services/HabitCompletionProcessor.swift */; };
+		A2000000000000000000001A /* HabitQuestTests/CompletionEventProcessingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000001A /* HabitQuestTests/CompletionEventProcessingTests.swift */; };
+		A2000000000000000000001B /* HabitQuestTests/DailyStreakCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000000000000000000001B /* HabitQuestTests/DailyStreakCalculatorTests.swift */; };
+		A20000000000000000000020 /* HabitQuest/Features/Today/DailyJourneyVisualView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000020 /* HabitQuest/Features/Today/DailyJourneyVisualView.swift */; };
+		A20000000000000000000021 /* HabitQuest/Services/HabitReminderNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000021 /* HabitQuest/Services/HabitReminderNotificationService.swift */; };
+		A20000000000000000000022 /* HabitQuestTests/HabitReminderNotificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000022 /* HabitQuestTests/HabitReminderNotificationServiceTests.swift */; };
+		A20000000000000000000023 /* HabitQuest/Persistence/NotificationPreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000023 /* HabitQuest/Persistence/NotificationPreferencesStore.swift */; };
+		A20000000000000000000024 /* HabitQuest/Domain/HabitAnalyticsCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000024 /* HabitQuest/Domain/HabitAnalyticsCalculator.swift */; };
+		A20000000000000000000025 /* HabitQuestTests/HabitAnalyticsCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000025 /* HabitQuestTests/HabitAnalyticsCalculatorTests.swift */; };
+		A20000000000000000000026 /* HabitQuest/Persistence/HabitProgressionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000026 /* HabitQuest/Persistence/HabitProgressionStore.swift */; };
+		A20000000000000000000027 /* HabitQuest/Domain/HabitMilestones.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000027 /* HabitQuest/Domain/HabitMilestones.swift */; };
+		A20000000000000000000028 /* HabitQuest/Persistence/HabitAchievementStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000028 /* HabitQuest/Persistence/HabitAchievementStore.swift */; };
+		A20000000000000000000029 /* HabitQuest/Services/HabitAchievementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000029 /* HabitQuest/Services/HabitAchievementService.swift */; };
+		A20000000000000000000030 /* HabitQuestTests/HabitMilestonesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000030 /* HabitQuestTests/HabitMilestonesTests.swift */; };
+		A20000000000000000000031 /* HabitQuest/App/HabitQuestPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000031 /* HabitQuest/App/HabitQuestPreferences.swift */; };
+		A20000000000000000000032 /* HabitQuest/Services/HabitQuestLocalDataManagementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000032 /* HabitQuest/Services/HabitQuestLocalDataManagementService.swift */; };
+		A20000000000000000000033 /* HabitQuestTests/HabitQuestLocalDataManagementServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000033 /* HabitQuestTests/HabitQuestLocalDataManagementServiceTests.swift */; };
+		A20000000000000000000034 /* HabitQuest/Services/HabitDayResolutionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000034 /* HabitQuest/Services/HabitDayResolutionService.swift */; };
+		A20000000000000000000035 /* HabitQuestTests/HabitDayResolutionServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000035 /* HabitQuestTests/HabitDayResolutionServiceTests.swift */; };
+		A20000000000000000000036 /* HabitQuest/Features/Shared/CalmEmptyStateCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000036 /* HabitQuest/Features/Shared/CalmEmptyStateCard.swift */; };
+		A20000000000000000000037 /* HabitQuest/Preview/HabitQuestPreviewFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000037 /* HabitQuest/Preview/HabitQuestPreviewFixtures.swift */; };
+		A20000000000000000000038 /* HabitQuest/Domain/PremiumEntitlement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000038 /* HabitQuest/Domain/PremiumEntitlement.swift */; };
+		A20000000000000000000039 /* HabitQuest/Services/PremiumEntitlementService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000039 /* HabitQuest/Services/PremiumEntitlementService.swift */; };
+		A20000000000000000000040 /* HabitQuestTests/PremiumEntitlementServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000040 /* HabitQuestTests/PremiumEntitlementServiceTests.swift */; };
+		A20000000000000000000041 /* HabitQuest/Domain/SubscriptionCatalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000044 /* HabitQuest/Domain/SubscriptionCatalog.swift */; };
+		A20000000000000000000042 /* HabitQuest/Services/SubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000045 /* HabitQuest/Services/SubscriptionManager.swift */; };
+		A20000000000000000000043 /* HabitQuestTests/SubscriptionManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000046 /* HabitQuestTests/SubscriptionManagerTests.swift */; };
+		A20000000000000000000044 /* HabitQuest/Features/Premium/PremiumPaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000047 /* HabitQuest/Features/Premium/PremiumPaywallView.swift */; };
+		A20000000000000000000045 /* HabitQuest/Features/Premium/PremiumTrialIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000048 /* HabitQuest/Features/Premium/PremiumTrialIntroView.swift */; };
+		A20000000000000000000046 /* HabitQuest/Features/Profile/ProfilePremiumSubscriptionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000049 /* HabitQuest/Features/Profile/ProfilePremiumSubscriptionDetailView.swift */; };
+		A20000000000000000000047 /* HabitQuest/Features/Premium/PremiumFeatureGateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000050 /* HabitQuest/Features/Premium/PremiumFeatureGateView.swift */; };
+		A20000000000000000000051 /* HabitQuest/Persistence/HabitDaySectionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000051 /* HabitQuest/Persistence/HabitDaySectionStore.swift */; };
+		A20000000000000000000052 /* HabitQuest/Features/Habits/HabitDaySectionsManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000052 /* HabitQuest/Features/Habits/HabitDaySectionsManagementView.swift */; };
+		A20000000000000000000053 /* HabitQuest/Features/Habits/HabitAdvancedSchedulingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000053 /* HabitQuest/Features/Habits/HabitAdvancedSchedulingView.swift */; };
+		A20000000000000000000054 /* HabitQuestTests/HabitAdvancedSchedulingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000054 /* HabitQuestTests/HabitAdvancedSchedulingTests.swift */; };
+		A20000000000000000000055 /* HabitQuest/Domain/HabitQuestPersonalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000055 /* HabitQuest/Domain/HabitQuestPersonalization.swift */; };
+		A20000000000000000000056 /* HabitQuestTests/HabitQuestPersonalizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000056 /* HabitQuestTests/HabitQuestPersonalizationTests.swift */; };
+		A20000000000000000000057 /* HabitQuest/Services/PremiumPromotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000058 /* HabitQuest/Services/PremiumPromotionManager.swift */; };
+		A20000000000000000000058 /* HabitQuestTests/PremiumPromotionManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000059 /* HabitQuestTests/PremiumPromotionManagerTests.swift */; };
+		A20000000000000000000059 /* HabitQuest/App/HabitQuestAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000060 /* HabitQuest/App/HabitQuestAppDelegate.swift */; };
+		A20000000000000000000060 /* HabitQuest/Services/PremiumPromotionalNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000061 /* HabitQuest/Services/PremiumPromotionalNotificationService.swift */; };
+		A20000000000000000000061 /* HabitQuestTests/PremiumPromotionalNotificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000062 /* HabitQuestTests/PremiumPromotionalNotificationServiceTests.swift */; };
+		A20000000000000000000062 /* HabitQuest/Domain/PremiumExpirationPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000063 /* HabitQuest/Domain/PremiumExpirationPolicy.swift */; };
+		A20000000000000000000063 /* HabitQuestTests/PremiumExpirationPolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000064 /* HabitQuestTests/PremiumExpirationPolicyTests.swift */; };
+		A20000000000000000000064 /* HabitQuestTests/HabitQuestWidgetStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000065 /* HabitQuestTests/HabitQuestWidgetStoreTests.swift */; };
+		A20000000000000000000066 /* HabitQuest/Preview/HabitQuestStoreKitFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000066 /* HabitQuest/Preview/HabitQuestStoreKitFixtures.swift */; };
+		C20000000000000000000001 /* HabitQuest/Widgets/HabitQuestWidgetStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10000000000000000000001 /* HabitQuest/Widgets/HabitQuestWidgetStore.swift */; };
+		C20000000000000000000002 /* HabitQuest/Services/HabitQuestWidgetRefreshService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10000000000000000000002 /* HabitQuest/Services/HabitQuestWidgetRefreshService.swift */; };
+		C20000000000000000000003 /* HabitQuest/Widgets/HabitQuestWidgetStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10000000000000000000001 /* HabitQuest/Widgets/HabitQuestWidgetStore.swift */; };
+		C20000000000000000000004 /* HabitQuestWidgets/HabitQuestWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10000000000000000000003 /* HabitQuestWidgets/HabitQuestWidgets.swift */; };
+		C20000000000000000000005 /* HabitQuestWidgets/HabitQuestWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10000000000000000000004 /* HabitQuestWidgets/HabitQuestWidgetsBundle.swift */; };
+		C20000000000000000000006 /* HabitQuestWidgets.appex in CopyFiles */ = {isa = PBXBuildFile; fileRef = C10000000000000000000007 /* HabitQuestWidgets.appex */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		1D6058900D05DD3D006BFB93 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1D6058900D05DD3D006BFB54 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1D6058900D05DD3D006BFB55;
+			remoteInfo = HabitQuest;
+		};
+		C40000000000000000000002 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1D6058900D05DD3D006BFB54 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C40000000000000000000001;
+			remoteInfo = HabitQuestWidgets;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		C30000000000000000000004 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				C20000000000000000000006 /* HabitQuestWidgets.appex in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		1D6058900D05DD3D006BFB60 /* HabitQuest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HabitQuest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D6058900D05DD3D006BFB61 /* HabitQuestApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestApp.swift; sourceTree = "<group>"; };
+		1D6058900D05DD3D006BFB62 /* AppRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRootView.swift; sourceTree = "<group>"; };
+		1D6058900D05DD3D006BFB63 /* AuthLandingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthLandingView.swift; sourceTree = "<group>"; };
+		1D6058900D05DD3D006BFB64 /* HabitQuestTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestTheme.swift; sourceTree = "<group>"; };
+		1D6058900D05DD3D006BFB65 /* LaunchScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreenView.swift; sourceTree = "<group>"; };
+		1D6058900D05DD3D006BFB81 /* OnboardingFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlowView.swift; sourceTree = "<group>"; };
+		1D6058900D05DD3D006BFB82 /* MainShellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainShellView.swift; sourceTree = "<group>"; };
+		1D6058900D05DD3D006BFB91 /* HabitQuestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HabitQuestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A10000000000000000000001 /* HabitQuest/App/HabitQuestEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/App/HabitQuestEnvironment.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000002 /* HabitQuest/Features/Shared/FeaturePlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Features/Shared/FeaturePlaceholderView.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000003 /* HabitQuest/Features/Today/TodayFeatureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Features/Today/TodayFeatureView.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000004 /* HabitQuest/Features/Habits/HabitsFeatureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Features/Habits/HabitsFeatureView.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000005 /* HabitQuest/Features/Analytics/AnalyticsFeatureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Features/Analytics/AnalyticsFeatureView.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000006 /* HabitQuest/Features/Profile/ProfileFeatureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Features/Profile/ProfileFeatureView.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000007 /* HabitQuest/Domain/HabitModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Domain/HabitModels.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000008 /* HabitQuest/Domain/HabitSchedulingEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Domain/HabitSchedulingEngine.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000009 /* HabitQuest/Domain/HabitProgressCalculators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Domain/HabitProgressCalculators.swift; sourceTree = SOURCE_ROOT; };
+		A1000000000000000000000A /* HabitQuest/Persistence/HabitRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Persistence/HabitRepository.swift; sourceTree = SOURCE_ROOT; };
+		A1000000000000000000000B /* HabitQuest/Persistence/LocalHabitRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Persistence/LocalHabitRepository.swift; sourceTree = SOURCE_ROOT; };
+		A1000000000000000000000C /* HabitQuest/Services/AppServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Services/AppServices.swift; sourceTree = SOURCE_ROOT; };
+		A1000000000000000000000D /* HabitQuestTests/DomainLayerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestTests/DomainLayerTests.swift; sourceTree = SOURCE_ROOT; };
+		A1000000000000000000000E /* HabitQuest/Persistence/HabitSwiftDataModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Persistence/HabitSwiftDataModels.swift; sourceTree = SOURCE_ROOT; };
+		A1000000000000000000000F /* HabitQuestTests/LocalPersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestTests/LocalPersistenceTests.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000010 /* HabitQuest/DesignSystem/HabitQuestDesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/DesignSystem/HabitQuestDesignSystem.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000011 /* HabitQuest/DesignSystem/HabitQuestDesignComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/DesignSystem/HabitQuestDesignComponents.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000012 /* HabitQuest/DesignSystem/HabitQuestLiquidGlass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/DesignSystem/HabitQuestLiquidGlass.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000013 /* HabitQuest/Features/Habits/HabitManagementViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Features/Habits/HabitManagementViews.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000014 /* HabitQuest/Domain/DailyHabitInstanceEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Domain/DailyHabitInstanceEngine.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000015 /* HabitQuest/Persistence/DailyHabitStateStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Persistence/DailyHabitStateStore.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000016 /* HabitQuestTests/DailyHabitInstanceEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestTests/DailyHabitInstanceEngineTests.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000017 /* HabitQuest/Features/Today/TodayDeckViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Features/Today/TodayDeckViews.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000018 /* HabitQuest/Persistence/CompletionEventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Persistence/CompletionEventStore.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000019 /* HabitQuest/Services/HabitCompletionProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Services/HabitCompletionProcessor.swift; sourceTree = SOURCE_ROOT; };
+		A1000000000000000000001A /* HabitQuestTests/CompletionEventProcessingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestTests/CompletionEventProcessingTests.swift; sourceTree = SOURCE_ROOT; };
+		A1000000000000000000001B /* HabitQuestTests/DailyStreakCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestTests/DailyStreakCalculatorTests.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000020 /* HabitQuest/Features/Today/DailyJourneyVisualView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Features/Today/DailyJourneyVisualView.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000021 /* HabitQuest/Services/HabitReminderNotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Services/HabitReminderNotificationService.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000022 /* HabitQuestTests/HabitReminderNotificationServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestTests/HabitReminderNotificationServiceTests.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000023 /* HabitQuest/Persistence/NotificationPreferencesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Persistence/NotificationPreferencesStore.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000024 /* HabitQuest/Domain/HabitAnalyticsCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Domain/HabitAnalyticsCalculator.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000025 /* HabitQuestTests/HabitAnalyticsCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestTests/HabitAnalyticsCalculatorTests.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000026 /* HabitQuest/Persistence/HabitProgressionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Persistence/HabitProgressionStore.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000027 /* HabitQuest/Domain/HabitMilestones.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Domain/HabitMilestones.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000028 /* HabitQuest/Persistence/HabitAchievementStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Persistence/HabitAchievementStore.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000029 /* HabitQuest/Services/HabitAchievementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Services/HabitAchievementService.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000030 /* HabitQuestTests/HabitMilestonesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestTests/HabitMilestonesTests.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000031 /* HabitQuest/App/HabitQuestPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/App/HabitQuestPreferences.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000032 /* HabitQuest/Services/HabitQuestLocalDataManagementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Services/HabitQuestLocalDataManagementService.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000033 /* HabitQuestTests/HabitQuestLocalDataManagementServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestTests/HabitQuestLocalDataManagementServiceTests.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000034 /* HabitQuest/Services/HabitDayResolutionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Services/HabitDayResolutionService.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000035 /* HabitQuestTests/HabitDayResolutionServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestTests/HabitDayResolutionServiceTests.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000036 /* HabitQuest/Features/Shared/CalmEmptyStateCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Features/Shared/CalmEmptyStateCard.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000037 /* HabitQuest/Preview/HabitQuestPreviewFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Preview/HabitQuestPreviewFixtures.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000038 /* HabitQuest/Domain/PremiumEntitlement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Domain/PremiumEntitlement.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000039 /* HabitQuest/Services/PremiumEntitlementService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Services/PremiumEntitlementService.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000040 /* HabitQuestTests/PremiumEntitlementServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestTests/PremiumEntitlementServiceTests.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000044 /* HabitQuest/Domain/SubscriptionCatalog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Domain/SubscriptionCatalog.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000045 /* HabitQuest/Services/SubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Services/SubscriptionManager.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000046 /* HabitQuestTests/SubscriptionManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestTests/SubscriptionManagerTests.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000047 /* HabitQuest/Features/Premium/PremiumPaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Features/Premium/PremiumPaywallView.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000048 /* HabitQuest/Features/Premium/PremiumTrialIntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Features/Premium/PremiumTrialIntroView.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000049 /* HabitQuest/Features/Profile/ProfilePremiumSubscriptionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Features/Profile/ProfilePremiumSubscriptionDetailView.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000050 /* HabitQuest/Features/Premium/PremiumFeatureGateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Features/Premium/PremiumFeatureGateView.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000051 /* HabitQuest/Persistence/HabitDaySectionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Persistence/HabitDaySectionStore.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000052 /* HabitQuest/Features/Habits/HabitDaySectionsManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Features/Habits/HabitDaySectionsManagementView.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000053 /* HabitQuest/Features/Habits/HabitAdvancedSchedulingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Features/Habits/HabitAdvancedSchedulingView.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000054 /* HabitQuestTests/HabitAdvancedSchedulingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestTests/HabitAdvancedSchedulingTests.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000055 /* HabitQuest/Domain/HabitQuestPersonalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Domain/HabitQuestPersonalization.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000056 /* HabitQuestTests/HabitQuestPersonalizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestTests/HabitQuestPersonalizationTests.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000057 /* HabitQuest/HabitQuest.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HabitQuest/HabitQuest.entitlements; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000058 /* HabitQuest/Services/PremiumPromotionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Services/PremiumPromotionManager.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000059 /* HabitQuestTests/PremiumPromotionManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestTests/PremiumPromotionManagerTests.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000060 /* HabitQuest/App/HabitQuestAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/App/HabitQuestAppDelegate.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000061 /* HabitQuest/Services/PremiumPromotionalNotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Services/PremiumPromotionalNotificationService.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000062 /* HabitQuestTests/PremiumPromotionalNotificationServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestTests/PremiumPromotionalNotificationServiceTests.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000063 /* HabitQuest/Domain/PremiumExpirationPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Domain/PremiumExpirationPolicy.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000064 /* HabitQuestTests/PremiumExpirationPolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestTests/PremiumExpirationPolicyTests.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000065 /* HabitQuestTests/HabitQuestWidgetStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestTests/HabitQuestWidgetStoreTests.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000000066 /* HabitQuest/Preview/HabitQuestStoreKitFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Preview/HabitQuestStoreKitFixtures.swift; sourceTree = SOURCE_ROOT; };
+		C10000000000000000000001 /* HabitQuest/Widgets/HabitQuestWidgetStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Widgets/HabitQuestWidgetStore.swift; sourceTree = SOURCE_ROOT; };
+		C10000000000000000000002 /* HabitQuest/Services/HabitQuestWidgetRefreshService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Services/HabitQuestWidgetRefreshService.swift; sourceTree = SOURCE_ROOT; };
+		C10000000000000000000003 /* HabitQuestWidgets/HabitQuestWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestWidgets/HabitQuestWidgets.swift; sourceTree = SOURCE_ROOT; };
+		C10000000000000000000004 /* HabitQuestWidgets/HabitQuestWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestWidgets/HabitQuestWidgetsBundle.swift; sourceTree = SOURCE_ROOT; };
+		C10000000000000000000005 /* HabitQuestWidgets/HabitQuestWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HabitQuestWidgets/HabitQuestWidgets.entitlements; sourceTree = SOURCE_ROOT; };
+		C10000000000000000000006 /* HabitQuestWidgets/Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = HabitQuestWidgets/Info.plist; sourceTree = SOURCE_ROOT; };
+		C10000000000000000000007 /* HabitQuestWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = HabitQuestWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1D6058900D05DD3D006BFB66 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C30000000000000000000002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1D6058900D05DD3D006BFB56 /* HabitQuest */ = {
+			isa = PBXGroup;
+			children = (
+				B10000000000000000000001,
+				B10000000000000000000002,
+				B10000000000000000000009,
+				B1000000000000000000000A,
+				B1000000000000000000000B,
+				B1000000000000000000000E,
+				B1000000000000000000000C,
+				B1000000000000000000000D /* HabitQuestTests */,
+				1D6058900D05DD3D006BFB58 /* Products */,
+				ABDEF1ED3034537300A9B6EF /* Recovered References */,
+			);
+			path = HabitQuest;
+			sourceTree = "<group>";
+		};
+		1D6058900D05DD3D006BFB58 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1D6058900D05DD3D006BFB60 /* HabitQuest.app */,
+				C10000000000000000000007 /* HabitQuestWidgets.appex */,
+				1D6058900D05DD3D006BFB91 /* HabitQuestTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		ABDEF1ED3034537300A9B6EF /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				A10000000000000000000063 /* HabitQuest/Domain/PremiumExpirationPolicy.swift */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
+		B10000000000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				1D6058900D05DD3D006BFB61 /* HabitQuestApp.swift */,
+				1D6058900D05DD3D006BFB62 /* AppRootView.swift */,
+				1D6058900D05DD3D006BFB65 /* LaunchScreenView.swift */,
+				1D6058900D05DD3D006BFB82 /* MainShellView.swift */,
+				A10000000000000000000060 /* HabitQuest/App/HabitQuestAppDelegate.swift */,
+				A10000000000000000000031 /* HabitQuest/App/HabitQuestPreferences.swift */,
+				A10000000000000000000001 /* HabitQuest/App/HabitQuestEnvironment.swift */,
+				A10000000000000000000037 /* HabitQuest/Preview/HabitQuestPreviewFixtures.swift */,
+				A10000000000000000000066 /* HabitQuest/Preview/HabitQuestStoreKitFixtures.swift */,
+				A10000000000000000000057 /* HabitQuest/HabitQuest.entitlements */,
+			);
+			sourceTree = "<group>";
+		};
+		B10000000000000000000002 = {
+			isa = PBXGroup;
+			children = (
+				B10000000000000000000003,
+				B10000000000000000000004,
+				B10000000000000000000005,
+				B10000000000000000000006,
+				B10000000000000000000007,
+				B10000000000000000000010,
+				B10000000000000000000008,
+			);
+			sourceTree = "<group>";
+		};
+		B10000000000000000000003 = {
+			isa = PBXGroup;
+			children = (
+				A10000000000000000000003 /* HabitQuest/Features/Today/TodayFeatureView.swift */,
+				A10000000000000000000017 /* HabitQuest/Features/Today/TodayDeckViews.swift */,
+				A10000000000000000000020 /* HabitQuest/Features/Today/DailyJourneyVisualView.swift */,
+			);
+			sourceTree = "<group>";
+		};
+		B10000000000000000000004 = {
+			isa = PBXGroup;
+			children = (
+				A10000000000000000000004 /* HabitQuest/Features/Habits/HabitsFeatureView.swift */,
+				A10000000000000000000013 /* HabitQuest/Features/Habits/HabitManagementViews.swift */,
+				A10000000000000000000052 /* HabitQuest/Features/Habits/HabitDaySectionsManagementView.swift */,
+				A10000000000000000000053 /* HabitQuest/Features/Habits/HabitAdvancedSchedulingView.swift */,
+			);
+			sourceTree = "<group>";
+		};
+		B10000000000000000000005 = {
+			isa = PBXGroup;
+			children = (
+				A10000000000000000000005 /* HabitQuest/Features/Analytics/AnalyticsFeatureView.swift */,
+			);
+			sourceTree = "<group>";
+		};
+		B10000000000000000000006 = {
+			isa = PBXGroup;
+			children = (
+				A10000000000000000000006 /* HabitQuest/Features/Profile/ProfileFeatureView.swift */,
+				A10000000000000000000049 /* HabitQuest/Features/Profile/ProfilePremiumSubscriptionDetailView.swift */,
+			);
+			sourceTree = "<group>";
+		};
+		B10000000000000000000007 = {
+			isa = PBXGroup;
+			children = (
+				1D6058900D05DD3D006BFB81 /* OnboardingFlowView.swift */,
+				1D6058900D05DD3D006BFB63 /* AuthLandingView.swift */,
+			);
+			sourceTree = "<group>";
+		};
+		B10000000000000000000008 = {
+			isa = PBXGroup;
+			children = (
+				A10000000000000000000002 /* HabitQuest/Features/Shared/FeaturePlaceholderView.swift */,
+				A10000000000000000000036 /* HabitQuest/Features/Shared/CalmEmptyStateCard.swift */,
+			);
+			sourceTree = "<group>";
+		};
+		B10000000000000000000009 = {
+			isa = PBXGroup;
+			children = (
+				A10000000000000000000007 /* HabitQuest/Domain/HabitModels.swift */,
+				A10000000000000000000008 /* HabitQuest/Domain/HabitSchedulingEngine.swift */,
+				A10000000000000000000009 /* HabitQuest/Domain/HabitProgressCalculators.swift */,
+				A10000000000000000000024 /* HabitQuest/Domain/HabitAnalyticsCalculator.swift */,
+				A10000000000000000000027 /* HabitQuest/Domain/HabitMilestones.swift */,
+				A10000000000000000000038 /* HabitQuest/Domain/PremiumEntitlement.swift */,
+				A10000000000000000000044 /* HabitQuest/Domain/SubscriptionCatalog.swift */,
+				A10000000000000000000055 /* HabitQuest/Domain/HabitQuestPersonalization.swift */,
+				A10000000000000000000014 /* HabitQuest/Domain/DailyHabitInstanceEngine.swift */,
+			);
+			sourceTree = "<group>";
+		};
+		B1000000000000000000000A = {
+			isa = PBXGroup;
+			children = (
+				A1000000000000000000000A /* HabitQuest/Persistence/HabitRepository.swift */,
+				A1000000000000000000000B /* HabitQuest/Persistence/LocalHabitRepository.swift */,
+				A1000000000000000000000E /* HabitQuest/Persistence/HabitSwiftDataModels.swift */,
+				A10000000000000000000015 /* HabitQuest/Persistence/DailyHabitStateStore.swift */,
+				A10000000000000000000018 /* HabitQuest/Persistence/CompletionEventStore.swift */,
+				A10000000000000000000023 /* HabitQuest/Persistence/NotificationPreferencesStore.swift */,
+				A10000000000000000000026 /* HabitQuest/Persistence/HabitProgressionStore.swift */,
+				A10000000000000000000028 /* HabitQuest/Persistence/HabitAchievementStore.swift */,
+				A10000000000000000000051 /* HabitQuest/Persistence/HabitDaySectionStore.swift */,
+			);
+			sourceTree = "<group>";
+		};
+		B1000000000000000000000B = {
+			isa = PBXGroup;
+			children = (
+				A1000000000000000000000C /* HabitQuest/Services/AppServices.swift */,
+				A10000000000000000000032 /* HabitQuest/Services/HabitQuestLocalDataManagementService.swift */,
+				A10000000000000000000019 /* HabitQuest/Services/HabitCompletionProcessor.swift */,
+				A10000000000000000000029 /* HabitQuest/Services/HabitAchievementService.swift */,
+				A10000000000000000000034 /* HabitQuest/Services/HabitDayResolutionService.swift */,
+				A10000000000000000000039 /* HabitQuest/Services/PremiumEntitlementService.swift */,
+				A10000000000000000000058 /* HabitQuest/Services/PremiumPromotionManager.swift */,
+				A10000000000000000000061 /* HabitQuest/Services/PremiumPromotionalNotificationService.swift */,
+				A10000000000000000000045 /* HabitQuest/Services/SubscriptionManager.swift */,
+				A10000000000000000000021 /* HabitQuest/Services/HabitReminderNotificationService.swift */,
+			);
+			sourceTree = "<group>";
+		};
+		B1000000000000000000000C = {
+			isa = PBXGroup;
+			children = (
+				A10000000000000000000010 /* HabitQuest/DesignSystem/HabitQuestDesignSystem.swift */,
+				A10000000000000000000011 /* HabitQuest/DesignSystem/HabitQuestDesignComponents.swift */,
+				A10000000000000000000012 /* HabitQuest/DesignSystem/HabitQuestLiquidGlass.swift */,
+				1D6058900D05DD3D006BFB64 /* HabitQuestTheme.swift */,
+			);
+			sourceTree = "<group>";
+		};
+		B1000000000000000000000D /* HabitQuestTests */ = {
+			isa = PBXGroup;
+			children = (
+				A1000000000000000000000D /* HabitQuestTests/DomainLayerTests.swift */,
+				A1000000000000000000000F /* HabitQuestTests/LocalPersistenceTests.swift */,
+				A10000000000000000000016 /* HabitQuestTests/DailyHabitInstanceEngineTests.swift */,
+				A1000000000000000000001A /* HabitQuestTests/CompletionEventProcessingTests.swift */,
+				A1000000000000000000001B /* HabitQuestTests/DailyStreakCalculatorTests.swift */,
+				A10000000000000000000022 /* HabitQuestTests/HabitReminderNotificationServiceTests.swift */,
+				A10000000000000000000025 /* HabitQuestTests/HabitAnalyticsCalculatorTests.swift */,
+				A10000000000000000000030 /* HabitQuestTests/HabitMilestonesTests.swift */,
+				A10000000000000000000054 /* HabitQuestTests/HabitAdvancedSchedulingTests.swift */,
+				A10000000000000000000056 /* HabitQuestTests/HabitQuestPersonalizationTests.swift */,
+				A10000000000000000000059 /* HabitQuestTests/PremiumPromotionManagerTests.swift */,
+				A10000000000000000000062 /* HabitQuestTests/PremiumPromotionalNotificationServiceTests.swift */,
+				A10000000000000000000033 /* HabitQuestTests/HabitQuestLocalDataManagementServiceTests.swift */,
+				A10000000000000000000035 /* HabitQuestTests/HabitDayResolutionServiceTests.swift */,
+				A10000000000000000000040 /* HabitQuestTests/PremiumEntitlementServiceTests.swift */,
+				A10000000000000000000046 /* HabitQuestTests/SubscriptionManagerTests.swift */,
+				A10000000000000000000064 /* HabitQuestTests/PremiumExpirationPolicyTests.swift */,
+				A10000000000000000000065 /* HabitQuestTests/HabitQuestWidgetStoreTests.swift */,
+			);
+			path = HabitQuestTests;
+			sourceTree = "<group>";
+		};
+		B1000000000000000000000E = {
+			isa = PBXGroup;
+			children = (
+				C10000000000000000000001 /* HabitQuest/Widgets/HabitQuestWidgetStore.swift */,
+				C10000000000000000000002 /* HabitQuest/Services/HabitQuestWidgetRefreshService.swift */,
+				C10000000000000000000003 /* HabitQuestWidgets/HabitQuestWidgets.swift */,
+				C10000000000000000000004 /* HabitQuestWidgets/HabitQuestWidgetsBundle.swift */,
+				C10000000000000000000005 /* HabitQuestWidgets/HabitQuestWidgets.entitlements */,
+				C10000000000000000000006 /* HabitQuestWidgets/Info.plist */,
+			);
+			sourceTree = "<group>";
+		};
+		B10000000000000000000010 = {
+			isa = PBXGroup;
+			children = (
+				A10000000000000000000047 /* HabitQuest/Features/Premium/PremiumPaywallView.swift */,
+				A10000000000000000000048 /* HabitQuest/Features/Premium/PremiumTrialIntroView.swift */,
+				A10000000000000000000050 /* HabitQuest/Features/Premium/PremiumFeatureGateView.swift */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1D6058900D05DD3D006BFB55 /* HabitQuest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1D6058900D05DD3D006BFB80 /* Build configuration list for PBXNativeTarget "HabitQuest" */;
+			buildPhases = (
+				1D6058900D05DD3D006BFB67 /* Sources */,
+				1D6058900D05DD3D006BFB66 /* Frameworks */,
+				1D6058900D05DD3D006BFB68 /* Resources */,
+				C30000000000000000000004 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C40000000000000000000003 /* PBXTargetDependency */,
+			);
+			name = HabitQuest;
+			productName = HabitQuest;
+			productReference = 1D6058900D05DD3D006BFB60 /* HabitQuest.app */;
+			productType = "com.apple.product-type.application";
+		};
+		1D6058900D05DD3D006BFB7D /* HabitQuestTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1D6058900D05DD3D006BFB7C /* Build configuration list for PBXNativeTarget "HabitQuestTests" */;
+			buildPhases = (
+				1D6058900D05DD3D006BFB7E /* Sources */,
+				1D6058900D05DD3D006BFB90 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1D6058900D05DD3D006BFB92 /* PBXTargetDependency */,
+			);
+			name = HabitQuestTests;
+			productName = HabitQuestTests;
+			productReference = 1D6058900D05DD3D006BFB91 /* HabitQuestTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		C40000000000000000000001 /* HabitQuestWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C50000000000000000000001 /* Build configuration list for PBXNativeTarget "HabitQuestWidgets" */;
+			buildPhases = (
+				C30000000000000000000001 /* Sources */,
+				C30000000000000000000002 /* Frameworks */,
+				C30000000000000000000003 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HabitQuestWidgets;
+			productName = HabitQuestWidgets;
+			productReference = C10000000000000000000007 /* HabitQuestWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1D6058900D05DD3D006BFB54 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 2610;
+				LastUpgradeCheck = 2610;
+				TargetAttributes = {
+					1D6058900D05DD3D006BFB55 = {
+						CreatedOnToolsVersion = 26.6;
+					};
+					1D6058900D05DD3D006BFB7D = {
+						CreatedOnToolsVersion = 26.6;
+					};
+					C40000000000000000000001 = {
+						CreatedOnToolsVersion = 26.6;
+					};
+				};
+			};
+			buildConfigurationList = 1D6058900D05DD3D006BFB70 /* Build configuration list for PBXProject "HabitQuest" */;
+			compatibilityVersion = "Xcode 16.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 1D6058900D05DD3D006BFB56 /* HabitQuest */;
+			minimizedProjectReferenceProxies = 1;
+			productRefGroup = 1D6058900D05DD3D006BFB58 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1D6058900D05DD3D006BFB55 /* HabitQuest */,
+				1D6058900D05DD3D006BFB7D /* HabitQuestTests */,
+				C40000000000000000000001 /* HabitQuestWidgets */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1D6058900D05DD3D006BFB68 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1D6058900D05DD3D006BFB90 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C30000000000000000000003 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1D6058900D05DD3D006BFB67 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1D6058900D05DD3D006BFB71 /* HabitQuestApp.swift in Sources */,
+				1D6058900D05DD3D006BFB72 /* AppRootView.swift in Sources */,
+				1D6058900D05DD3D006BFB73 /* AuthLandingView.swift in Sources */,
+				1D6058900D05DD3D006BFB74 /* HabitQuestTheme.swift in Sources */,
+				1D6058900D05DD3D006BFB75 /* LaunchScreenView.swift in Sources */,
+				1D6058900D05DD3D006BFB83 /* OnboardingFlowView.swift in Sources */,
+				1D6058900D05DD3D006BFB84 /* MainShellView.swift in Sources */,
+				A20000000000000000000059 /* HabitQuest/App/HabitQuestAppDelegate.swift in Sources */,
+				A20000000000000000000010 /* HabitQuest/DesignSystem/HabitQuestDesignSystem.swift in Sources */,
+				A20000000000000000000011 /* HabitQuest/DesignSystem/HabitQuestDesignComponents.swift in Sources */,
+				A20000000000000000000012 /* HabitQuest/DesignSystem/HabitQuestLiquidGlass.swift in Sources */,
+				A20000000000000000000001 /* HabitQuest/App/HabitQuestEnvironment.swift in Sources */,
+				A20000000000000000000037 /* HabitQuest/Preview/HabitQuestPreviewFixtures.swift in Sources */,
+				A20000000000000000000066 /* HabitQuest/Preview/HabitQuestStoreKitFixtures.swift in Sources */,
+				A20000000000000000000002 /* HabitQuest/Features/Shared/FeaturePlaceholderView.swift in Sources */,
+				A20000000000000000000003 /* HabitQuest/Features/Today/TodayFeatureView.swift in Sources */,
+				A20000000000000000000017 /* HabitQuest/Features/Today/TodayDeckViews.swift in Sources */,
+				A20000000000000000000020 /* HabitQuest/Features/Today/DailyJourneyVisualView.swift in Sources */,
+				A20000000000000000000004 /* HabitQuest/Features/Habits/HabitsFeatureView.swift in Sources */,
+				A20000000000000000000013 /* HabitQuest/Features/Habits/HabitManagementViews.swift in Sources */,
+				A20000000000000000000005 /* HabitQuest/Features/Analytics/AnalyticsFeatureView.swift in Sources */,
+				A20000000000000000000006 /* HabitQuest/Features/Profile/ProfileFeatureView.swift in Sources */,
+				A20000000000000000000007 /* HabitQuest/Domain/HabitModels.swift in Sources */,
+				A20000000000000000000008 /* HabitQuest/Domain/HabitSchedulingEngine.swift in Sources */,
+				A20000000000000000000009 /* HabitQuest/Domain/HabitProgressCalculators.swift in Sources */,
+				A20000000000000000000024 /* HabitQuest/Domain/HabitAnalyticsCalculator.swift in Sources */,
+				A2000000000000000000000A /* HabitQuest/Persistence/HabitRepository.swift in Sources */,
+				A2000000000000000000000B /* HabitQuest/Persistence/LocalHabitRepository.swift in Sources */,
+				A20000000000000000000027 /* HabitQuest/Domain/HabitMilestones.swift in Sources */,
+				A20000000000000000000038 /* HabitQuest/Domain/PremiumEntitlement.swift in Sources */,
+				A20000000000000000000031 /* HabitQuest/App/HabitQuestPreferences.swift in Sources */,
+				A2000000000000000000000C /* HabitQuest/Services/AppServices.swift in Sources */,
+				A20000000000000000000032 /* HabitQuest/Services/HabitQuestLocalDataManagementService.swift in Sources */,
+				A20000000000000000000021 /* HabitQuest/Services/HabitReminderNotificationService.swift in Sources */,
+				A20000000000000000000039 /* HabitQuest/Services/PremiumEntitlementService.swift in Sources */,
+				A20000000000000000000057 /* HabitQuest/Services/PremiumPromotionManager.swift in Sources */,
+				A20000000000000000000060 /* HabitQuest/Services/PremiumPromotionalNotificationService.swift in Sources */,
+				A20000000000000000000062 /* HabitQuest/Domain/PremiumExpirationPolicy.swift in Sources */,
+				A20000000000000000000042 /* HabitQuest/Services/SubscriptionManager.swift in Sources */,
+				A20000000000000000000023 /* HabitQuest/Persistence/NotificationPreferencesStore.swift in Sources */,
+				A2000000000000000000000E /* HabitQuest/Persistence/HabitSwiftDataModels.swift in Sources */,
+				A20000000000000000000014 /* HabitQuest/Domain/DailyHabitInstanceEngine.swift in Sources */,
+				A20000000000000000000015 /* HabitQuest/Persistence/DailyHabitStateStore.swift in Sources */,
+				A20000000000000000000051 /* HabitQuest/Persistence/HabitDaySectionStore.swift in Sources */,
+				A20000000000000000000052 /* HabitQuest/Features/Habits/HabitDaySectionsManagementView.swift in Sources */,
+				A20000000000000000000053 /* HabitQuest/Features/Habits/HabitAdvancedSchedulingView.swift in Sources */,
+				A20000000000000000000018 /* HabitQuest/Persistence/CompletionEventStore.swift in Sources */,
+				A20000000000000000000019 /* HabitQuest/Services/HabitCompletionProcessor.swift in Sources */,
+				A20000000000000000000036 /* HabitQuest/Features/Shared/CalmEmptyStateCard.swift in Sources */,
+				A20000000000000000000026 /* HabitQuest/Persistence/HabitProgressionStore.swift in Sources */,
+				A20000000000000000000028 /* HabitQuest/Persistence/HabitAchievementStore.swift in Sources */,
+				A20000000000000000000029 /* HabitQuest/Services/HabitAchievementService.swift in Sources */,
+				A20000000000000000000034 /* HabitQuest/Services/HabitDayResolutionService.swift in Sources */,
+				A20000000000000000000041 /* HabitQuest/Domain/SubscriptionCatalog.swift in Sources */,
+				A20000000000000000000044 /* HabitQuest/Features/Premium/PremiumPaywallView.swift in Sources */,
+				A20000000000000000000045 /* HabitQuest/Features/Premium/PremiumTrialIntroView.swift in Sources */,
+				A20000000000000000000055 /* HabitQuest/Domain/HabitQuestPersonalization.swift in Sources */,
+				A20000000000000000000046 /* HabitQuest/Features/Profile/ProfilePremiumSubscriptionDetailView.swift in Sources */,
+				A20000000000000000000047 /* HabitQuest/Features/Premium/PremiumFeatureGateView.swift in Sources */,
+				C20000000000000000000001 /* HabitQuest/Widgets/HabitQuestWidgetStore.swift in Sources */,
+				C20000000000000000000002 /* HabitQuest/Services/HabitQuestWidgetRefreshService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1D6058900D05DD3D006BFB7E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A2000000000000000000000D /* HabitQuestTests/DomainLayerTests.swift in Sources */,
+				A2000000000000000000000F /* HabitQuestTests/LocalPersistenceTests.swift in Sources */,
+				A20000000000000000000016 /* HabitQuestTests/DailyHabitInstanceEngineTests.swift in Sources */,
+				A2000000000000000000001A /* HabitQuestTests/CompletionEventProcessingTests.swift in Sources */,
+				A2000000000000000000001B /* HabitQuestTests/DailyStreakCalculatorTests.swift in Sources */,
+				A20000000000000000000022 /* HabitQuestTests/HabitReminderNotificationServiceTests.swift in Sources */,
+				A20000000000000000000025 /* HabitQuestTests/HabitAnalyticsCalculatorTests.swift in Sources */,
+				A20000000000000000000030 /* HabitQuestTests/HabitMilestonesTests.swift in Sources */,
+				A20000000000000000000054 /* HabitQuestTests/HabitAdvancedSchedulingTests.swift in Sources */,
+				A20000000000000000000033 /* HabitQuestTests/HabitQuestLocalDataManagementServiceTests.swift in Sources */,
+				A20000000000000000000035 /* HabitQuestTests/HabitDayResolutionServiceTests.swift in Sources */,
+				A20000000000000000000040 /* HabitQuestTests/PremiumEntitlementServiceTests.swift in Sources */,
+				A20000000000000000000043 /* HabitQuestTests/SubscriptionManagerTests.swift in Sources */,
+				A20000000000000000000058 /* HabitQuestTests/PremiumPromotionManagerTests.swift in Sources */,
+				A20000000000000000000061 /* HabitQuestTests/PremiumPromotionalNotificationServiceTests.swift in Sources */,
+				A20000000000000000000056 /* HabitQuestTests/HabitQuestPersonalizationTests.swift in Sources */,
+				A20000000000000000000063 /* HabitQuestTests/PremiumExpirationPolicyTests.swift in Sources */,
+				A20000000000000000000064 /* HabitQuestTests/HabitQuestWidgetStoreTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C30000000000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C20000000000000000000003 /* HabitQuest/Widgets/HabitQuestWidgetStore.swift in Sources */,
+				C20000000000000000000004 /* HabitQuestWidgets/HabitQuestWidgets.swift in Sources */,
+				C20000000000000000000005 /* HabitQuestWidgets/HabitQuestWidgetsBundle.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1D6058900D05DD3D006BFB92 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1D6058900D05DD3D006BFB55 /* HabitQuest */;
+			targetProxy = 1D6058900D05DD3D006BFB93 /* PBXContainerItemProxy */;
+		};
+		C40000000000000000000003 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C40000000000000000000001 /* HabitQuestWidgets */;
+			targetProxy = C40000000000000000000002 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1D6058900D05DD3D006BFB76 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = YES;
+				CODE_SIGN_ENTITLEMENTS = HabitQuest/HabitQuest.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 77QMUWMVR2;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = HabitQuest;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.health-and-fitness";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.habitquest.ios;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		1D6058900D05DD3D006BFB77 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = YES;
+				CODE_SIGN_ENTITLEMENTS = HabitQuest/HabitQuest.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 77QMUWMVR2;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = HabitQuest;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.health-and-fitness";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.habitquest.ios;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		1D6058900D05DD3D006BFB78 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 77QMUWMVR2;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = HabitQuest;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.health-and-fitness";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.habitquest.ios;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		1D6058900D05DD3D006BFB79 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 77QMUWMVR2;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = HabitQuest;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.health-and-fitness";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.habitquest.ios;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		1D6058900D05DD3D006BFB7A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 77QMUWMVR2;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = HabitQuestTests;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.health-and-fitness";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.habitquest.ios.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HabitQuest.app/HabitQuest";
+			};
+			name = Debug;
+		};
+		1D6058900D05DD3D006BFB7B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 77QMUWMVR2;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = HabitQuestTests;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.health-and-fitness";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.habitquest.ios.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HabitQuest.app/HabitQuest";
+			};
+			name = Release;
+		};
+		C50000000000000000000002 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = YES;
+				CODE_SIGN_ENTITLEMENTS = HabitQuestWidgets/HabitQuestWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 77QMUWMVR2;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = HabitQuestWidgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.habitquest.ios.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		C50000000000000000000003 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = YES;
+				CODE_SIGN_ENTITLEMENTS = HabitQuestWidgets/HabitQuestWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 77QMUWMVR2;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = HabitQuestWidgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.habitquest.ios.widgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1D6058900D05DD3D006BFB70 /* Build configuration list for PBXProject "HabitQuest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1D6058900D05DD3D006BFB78 /* Debug */,
+				1D6058900D05DD3D006BFB79 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1D6058900D05DD3D006BFB7C /* Build configuration list for PBXNativeTarget "HabitQuestTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1D6058900D05DD3D006BFB7A /* Debug */,
+				1D6058900D05DD3D006BFB7B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1D6058900D05DD3D006BFB80 /* Build configuration list for PBXNativeTarget "HabitQuest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1D6058900D05DD3D006BFB76 /* Debug */,
+				1D6058900D05DD3D006BFB77 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C50000000000000000000001 /* Build configuration list for PBXNativeTarget "HabitQuestWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C50000000000000000000002 /* Debug */,
+				C50000000000000000000003 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1D6058900D05DD3D006BFB54 /* Project object */;
+}
