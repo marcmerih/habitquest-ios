@@ -332,6 +332,10 @@ final class SubscriptionManager: ObservableObject, @unchecked Sendable {
 final class LiveStoreKitSubscriptionClient: SubscriptionStoreKitClient, @unchecked Sendable {
     private var cachedProducts: [String: SubscriptionProduct] = [:]
     private var updateTask: Task<Void, Never>?
+    private var usesFallbackCatalog = false
+    #if DEBUG
+    private var developmentAccessState: PremiumAccessState?
+    #endif
 
     func loadProducts() async throws -> [SubscriptionProduct] {
         do {
@@ -348,18 +352,21 @@ final class LiveStoreKitSubscriptionClient: SubscriptionStoreKitClient, @uncheck
             if mapped.isEmpty {
                 let fallback = SubscriptionCatalog.fallbackProducts()
                 cachedProducts = Dictionary(uniqueKeysWithValues: fallback.map { ($0.id, $0) })
+                usesFallbackCatalog = true
                 return fallback.sorted {
                     SubscriptionCatalog.sortOrder(for: $0.id) < SubscriptionCatalog.sortOrder(for: $1.id)
                 }
             }
 
             cachedProducts = Dictionary(uniqueKeysWithValues: mapped.map { ($0.id, $0) })
+            usesFallbackCatalog = false
             return mapped.sorted {
                 SubscriptionCatalog.sortOrder(for: $0.id) < SubscriptionCatalog.sortOrder(for: $1.id)
             }
         } catch {
             let fallback = SubscriptionCatalog.fallbackProducts()
             cachedProducts = Dictionary(uniqueKeysWithValues: fallback.map { ($0.id, $0) })
+            usesFallbackCatalog = true
             return fallback.sorted {
                 SubscriptionCatalog.sortOrder(for: $0.id) < SubscriptionCatalog.sortOrder(for: $1.id)
             }
@@ -367,6 +374,12 @@ final class LiveStoreKitSubscriptionClient: SubscriptionStoreKitClient, @uncheck
     }
 
     func refreshAccessState() async throws -> PremiumAccessState {
+        #if DEBUG
+        if usesFallbackCatalog, let developmentAccessState {
+            return developmentAccessState
+        }
+        #endif
+
         if cachedProducts.isEmpty {
             _ = try await loadProducts()
         }
@@ -467,23 +480,39 @@ final class LiveStoreKitSubscriptionClient: SubscriptionStoreKitClient, @uncheck
         }
 
         guard let product = try await product(for: productID) else {
+            #if DEBUG
+            if usesFallbackCatalog, let developmentState = developmentPurchaseState(for: productID) {
+                developmentAccessState = developmentState
+                return .success
+            }
+            #endif
             throw SubscriptionManagerError.unknownProduct(productID)
         }
 
-        switch try await product.purchase() {
-        case .success(let verificationResult):
-            switch verificationResult {
-            case .verified(let transaction):
-                await transaction.finish()
-                return .success
-            case .unverified:
-                throw SubscriptionManagerError.verificationFailed
+        do {
+            switch try await product.purchase() {
+            case .success(let verificationResult):
+                switch verificationResult {
+                case .verified(let transaction):
+                    await transaction.finish()
+                    return .success
+                case .unverified:
+                    throw SubscriptionManagerError.verificationFailed
+                }
+            case .userCancelled:
+                return .cancelled
+            case .pending:
+                return .pending
+            @unknown default:
+                throw SubscriptionManagerError.purchaseFailed
             }
-        case .userCancelled:
-            return .cancelled
-        case .pending:
-            return .pending
-        @unknown default:
+        } catch {
+            #if DEBUG
+            if usesFallbackCatalog, let developmentState = developmentPurchaseState(for: productID) {
+                developmentAccessState = developmentState
+                return .success
+            }
+            #endif
             throw SubscriptionManagerError.purchaseFailed
         }
     }
@@ -697,6 +726,27 @@ final class LiveStoreKitSubscriptionClient: SubscriptionStoreKitClient, @uncheck
 
         return nil
     }
+
+    #if DEBUG
+    private func developmentPurchaseState(for productID: String) -> PremiumAccessState? {
+        guard let product = cachedProducts[productID] ?? cachedProducts.values.first else {
+            return nil
+        }
+
+        let introductoryOfferEligible = product.isEligibleForIntroOffer ?? true
+        let subscriptionStatus: PremiumSubscriptionStatus = introductoryOfferEligible ? .activeTrial : .activePaid
+
+        return PremiumAccessState(
+            tier: subscriptionStatus.isActiveTrial ? .trial : .premium,
+            metadata: PremiumAccessMetadata(
+                entitlementStatus: subscriptionStatus.isActiveTrial ? .trialing : .active,
+                introductoryOfferEligibility: introductoryOfferEligible,
+                subscriptionStatus: subscriptionStatus,
+                productInfo: product.premiumProductInfo
+            )
+        )
+    }
+    #endif
 
     private static func expirationDate(from status: Product.SubscriptionInfo.Status?) -> Date? {
         guard let status else {

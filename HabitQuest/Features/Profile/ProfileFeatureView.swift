@@ -41,13 +41,13 @@ struct ProfileFeatureView: View {
     @State private var draftDisplayName = ""
     @State private var draftAvatarSymbolName = ""
     @State private var draftAvatarImageData = Data()
-    @State private var showAllAchievements = false
+    @State private var isPresentingAchievementsSheet = false
 
     var body: some View {
         ZStack(alignment: .top) {
             HabitQuestScreenBackground()
 
-            ScrollView {
+            ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: HabitQuestDesignSystem.Spacing.lg) {
                     if let statusMessage {
                         statusBanner(message: statusMessage)
@@ -73,9 +73,18 @@ struct ProfileFeatureView: View {
                     .transition(.move(edge: .top).combined(with: .opacity))
             }
         }
+        .scrollBounceBehavior(.basedOnSize, axes: .vertical)
         .sheet(item: $exportItem) { item in
             ActivityView(activityItems: [item.url])
                 .ignoresSafeArea()
+        }
+        .sheet(isPresented: $isPresentingAchievementsSheet) {
+            AchievementsDetailView(
+                achievements: achievementRows,
+                onClose: {
+                    isPresentingAchievementsSheet = false
+                }
+            )
         }
         .sheet(isPresented: $isPresentingPremiumDetail) {
             ProfilePremiumSubscriptionDetailView(
@@ -312,10 +321,8 @@ struct ProfileFeatureView: View {
 
                 Spacer(minLength: 0)
 
-                Button(showAllAchievements ? "See fewer" : "See all") {
-                    withAnimation(reduceMotion ? .easeOut(duration: 0.12) : HabitQuestDesignSystem.Motion.standard) {
-                        showAllAchievements.toggle()
-                    }
+                Button("See all") {
+                    isPresentingAchievementsSheet = true
                 }
                 .font(HabitQuestDesignSystem.Typography.caption.weight(.semibold))
                 .foregroundStyle(HabitQuestDesignSystem.Palette.accent(for: colorScheme))
@@ -331,7 +338,7 @@ struct ProfileFeatureView: View {
                 )
             } else {
                 VStack(spacing: HabitQuestDesignSystem.Spacing.sm) {
-                    ForEach(Array(achievementRows.prefix(showAllAchievements ? achievementRows.count : 6))) { achievement in
+                    ForEach(Array(achievementRows.prefix(6))) { achievement in
                         AchievementRow(achievement: achievement)
                     }
                 }
@@ -1033,7 +1040,10 @@ struct ProfileFeatureView: View {
                         )
                     }
                 } label: {
-                    Label(premiumActionTitle, systemImage: "sparkles")
+                    Text(premiumActionTitle)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.82)
+                        .frame(maxWidth: 140)
                 }
                 .habitQuestGlassButtonStyle()
             }
@@ -1783,14 +1793,78 @@ struct ProfileFeatureView: View {
 
             Circle()
                 .fill(HabitQuestDesignSystem.Palette.surface(for: colorScheme))
-                .frame(width: 22, height: 22)
+                .frame(width: 18, height: 18)
                 .overlay(
                     Image(systemName: "pencil")
-                        .font(.system(size: 10, weight: .semibold))
+                        .font(.system(size: 8, weight: .semibold))
                         .foregroundStyle(HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme))
                 )
-                .offset(x: 2, y: 2)
+                .overlay(
+                    Circle()
+                        .stroke(HabitQuestDesignSystem.Palette.border(for: colorScheme), lineWidth: 1)
+                )
+                .offset(x: 4, y: 4)
         }
+    }
+}
+
+private struct AchievementsDetailView: View {
+    let achievements: [AchievementRowModel]
+    let onClose: () -> Void
+
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: HabitQuestDesignSystem.Spacing.lg) {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("Achievements")
+                            .font(HabitQuestDesignSystem.Typography.title)
+                            .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
+
+                        Text("All achievements stay visible here. Earned ones appear first, while the rest stay quietly faded.")
+                            .font(HabitQuestDesignSystem.Typography.callout)
+                            .foregroundStyle(HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+
+                    VStack(spacing: HabitQuestDesignSystem.Spacing.sm) {
+                        ForEach(achievements) { achievement in
+                            AchievementRow(achievement: achievement)
+                        }
+                    }
+                }
+                .padding(.horizontal, HabitQuestDesignSystem.Spacing.pageHorizontal)
+                .padding(.top, HabitQuestDesignSystem.Spacing.lg)
+                .padding(.bottom, HabitQuestDesignSystem.Spacing.xl)
+            }
+            .background(HabitQuestScreenBackground())
+            .navigationTitle("Achievements")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Close") {
+                        close()
+                    }
+                }
+
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        close()
+                    } label: {
+                        Image(systemName: "xmark")
+                    }
+                    .accessibilityLabel("Close achievements")
+                }
+            }
+        }
+    }
+
+    private func close() {
+        onClose()
+        dismiss()
     }
 }
 
