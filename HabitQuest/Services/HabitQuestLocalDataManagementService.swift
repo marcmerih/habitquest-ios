@@ -62,6 +62,7 @@ struct HabitQuestLocalDataManagementService {
     let progressionStore: LocalHabitProgressionStore
     let achievementStore: LocalHabitAchievementStore
     let notificationPreferencesStore: LocalNotificationPreferencesStore
+    let streakFreezeStore: LocalStreakFreezeStore
     let dateService: any DateProviding
     let dailyStreakCalculator: DailyStreakCalculator
     let habitProgressCalculator: HabitProgressCalculator
@@ -115,6 +116,7 @@ struct HabitQuestLocalDataManagementService {
             try progressionStore.reset()
             try achievementStore.reset()
             try notificationPreferencesStore.reset()
+            try streakFreezeStore.reset()
         } catch {
             throw HabitQuestLocalDataManagementError.deleteFailed(underlying: error)
         }

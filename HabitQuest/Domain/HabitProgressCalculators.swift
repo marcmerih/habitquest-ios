@@ -558,6 +558,10 @@ struct DailyStreakCalculator {
                 return DayAssessment(date: day, status: .neutral)
             }
 
+            if dayStates.contains(where: { $0.streakFreezeAppliedAt != nil }) {
+                return DayAssessment(date: day, status: .completed)
+            }
+
             let relevantStates = dayStates
                 .filter { state in
                     let key = completionKey(habitID: state.habitID, date: day)

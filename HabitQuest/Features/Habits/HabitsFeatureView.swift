@@ -387,9 +387,31 @@ struct HabitsFeatureView: View {
     private var activeHabitsList: some View {
         VStack(spacing: HabitQuestDesignSystem.Spacing.md) {
             ForEach(activeHabits) { habit in
-                Button {
-                    presentedSheet = .edit(habit)
-                } label: {
+                HabitSwipeActionRow(
+                    onTap: {
+                        presentedSheet = .edit(habit)
+                    },
+                    leadingActions: [
+                        HabitSwipeAction(
+                            title: "Edit",
+                            systemImage: "pencil",
+                            tint: HabitQuestDesignSystem.Palette.note(for: colorScheme),
+                            accessibilityLabel: "Edit habit"
+                        ) {
+                            presentedSheet = .edit(habit)
+                        }
+                    ],
+                    trailingActions: [
+                        HabitSwipeAction(
+                            title: "Archive",
+                            systemImage: "archivebox",
+                            tint: HabitQuestDesignSystem.Palette.textTertiary(for: colorScheme),
+                            accessibilityLabel: "Archive habit"
+                        ) {
+                            archiveHabit(habit)
+                        }
+                    ]
+                ) {
                     HabitRowCardView(
                         habit: habit,
                         currentStreak: currentStreak(for: habit),
@@ -400,24 +422,7 @@ struct HabitsFeatureView: View {
                         showsReorderHandle: true
                     )
                 }
-                .buttonStyle(.plain)
                 .accessibilityLabel(Text("\(habit.title), active habit"))
-                .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                    Button {
-                        presentedSheet = .edit(habit)
-                    } label: {
-                        Label("Edit", systemImage: "pencil")
-                    }
-                    .tint(HabitQuestDesignSystem.Palette.note(for: colorScheme))
-                }
-                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                    Button {
-                        archiveHabit(habit)
-                    } label: {
-                        Label("Archive", systemImage: "archivebox")
-                    }
-                    .tint(HabitQuestDesignSystem.Palette.textTertiary(for: colorScheme))
-                }
                 .onDrag {
                     draggedActiveHabitID = habit.id
                     return NSItemProvider(object: habit.id.uuidString as NSString)
@@ -482,9 +487,31 @@ struct HabitsFeatureView: View {
 
                     VStack(spacing: HabitQuestDesignSystem.Spacing.md) {
                         ForEach(group.habits) { habit in
-                            Button {
-                                presentedSheet = .edit(habit)
-                            } label: {
+                            HabitSwipeActionRow(
+                                onTap: {
+                                    presentedSheet = .edit(habit)
+                                },
+                                leadingActions: [
+                                    HabitSwipeAction(
+                                        title: "Edit",
+                                        systemImage: "pencil",
+                                        tint: HabitQuestDesignSystem.Palette.note(for: colorScheme),
+                                        accessibilityLabel: "Edit habit"
+                                    ) {
+                                        presentedSheet = .edit(habit)
+                                    }
+                                ],
+                                trailingActions: [
+                                    HabitSwipeAction(
+                                        title: "Archive",
+                                        systemImage: "archivebox",
+                                        tint: HabitQuestDesignSystem.Palette.textTertiary(for: colorScheme),
+                                        accessibilityLabel: "Archive habit"
+                                    ) {
+                                        archiveHabit(habit)
+                                    }
+                                ]
+                            ) {
                             HabitRowCardView(
                                 habit: habit,
                                 currentStreak: currentStreak(for: habit),
@@ -494,24 +521,7 @@ struct HabitsFeatureView: View {
                                 showsEditAffordance: true
                             )
                         }
-                            .buttonStyle(.plain)
                             .accessibilityLabel(Text("\(habit.title), active habit"))
-                            .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                                Button {
-                                    presentedSheet = .edit(habit)
-                                } label: {
-                                    Label("Edit", systemImage: "pencil")
-                                }
-                                .tint(HabitQuestDesignSystem.Palette.note(for: colorScheme))
-                            }
-                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                Button {
-                                    archiveHabit(habit)
-                                } label: {
-                                    Label("Archive", systemImage: "archivebox")
-                                }
-                                .tint(HabitQuestDesignSystem.Palette.textTertiary(for: colorScheme))
-                            }
                         }
                     }
                     .padding(.leading, HabitQuestDesignSystem.Spacing.xs)

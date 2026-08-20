@@ -1126,6 +1126,7 @@ struct DailyHabitState: Identifiable, Codable, Equatable, Sendable {
     var deckPriority: Int
     var currentPass: Int
     var nextEligibleAt: Date?
+    var streakFreezeAppliedAt: Date?
 
     init(
         id: UUID = UUID(),
@@ -1137,7 +1138,8 @@ struct DailyHabitState: Identifiable, Codable, Equatable, Sendable {
         completedAt: Date? = nil,
         deckPriority: Int = 0,
         currentPass: Int = 1,
-        nextEligibleAt: Date? = nil
+        nextEligibleAt: Date? = nil,
+        streakFreezeAppliedAt: Date? = nil
     ) {
         self.id = id
         self.habitID = habitID
@@ -1149,6 +1151,7 @@ struct DailyHabitState: Identifiable, Codable, Equatable, Sendable {
         self.deckPriority = deckPriority
         self.currentPass = currentPass
         self.nextEligibleAt = nextEligibleAt
+        self.streakFreezeAppliedAt = streakFreezeAppliedAt
     }
 }
 

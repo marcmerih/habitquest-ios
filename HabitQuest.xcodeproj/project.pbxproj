@@ -84,6 +84,7 @@
 		A20000000000000000000063 /* HabitQuestTests/PremiumExpirationPolicyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000064 /* HabitQuestTests/PremiumExpirationPolicyTests.swift */; };
 		A20000000000000000000064 /* HabitQuestTests/HabitQuestWidgetStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000065 /* HabitQuestTests/HabitQuestWidgetStoreTests.swift */; };
 		A20000000000000000000066 /* HabitQuest/Preview/HabitQuestStoreKitFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000066 /* HabitQuest/Preview/HabitQuestStoreKitFixtures.swift */; };
+		A20000000000000000006B /* HabitQuestTests/StreakFreezeServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000006B /* HabitQuestTests/StreakFreezeServiceTests.swift */; };
 		C20000000000000000000001 /* HabitQuest/Widgets/HabitQuestWidgetStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10000000000000000000001 /* HabitQuest/Widgets/HabitQuestWidgetStore.swift */; };
 		C20000000000000000000002 /* HabitQuest/Services/HabitQuestWidgetRefreshService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10000000000000000000002 /* HabitQuest/Services/HabitQuestWidgetRefreshService.swift */; };
 		C20000000000000000000003 /* HabitQuest/Widgets/HabitQuestWidgetStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10000000000000000000001 /* HabitQuest/Widgets/HabitQuestWidgetStore.swift */; };
@@ -203,6 +204,11 @@
 		A10000000000000000000064 /* HabitQuestTests/PremiumExpirationPolicyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestTests/PremiumExpirationPolicyTests.swift; sourceTree = SOURCE_ROOT; };
 		A10000000000000000000065 /* HabitQuestTests/HabitQuestWidgetStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestTests/HabitQuestWidgetStoreTests.swift; sourceTree = SOURCE_ROOT; };
 		A10000000000000000000066 /* HabitQuest/Preview/HabitQuestStoreKitFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Preview/HabitQuestStoreKitFixtures.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000006B /* HabitQuestTests/StreakFreezeServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestTests/StreakFreezeServiceTests.swift; sourceTree = SOURCE_ROOT; };
+		A100000000000000000067 /* HabitQuest/Domain/StreakFreezeModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Domain/StreakFreezeModels.swift; sourceTree = SOURCE_ROOT; };
+		A100000000000000000068 /* HabitQuest/Persistence/StreakFreezeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Persistence/StreakFreezeStore.swift; sourceTree = SOURCE_ROOT; };
+		A100000000000000000069 /* HabitQuest/Services/StreakFreezeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Services/StreakFreezeService.swift; sourceTree = SOURCE_ROOT; };
+		A10000000000000000006A /* HabitQuest/Features/Today/StreakFreezeModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Features/Today/StreakFreezeModalView.swift; sourceTree = SOURCE_ROOT; };
 		C10000000000000000000001 /* HabitQuest/Widgets/HabitQuestWidgetStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Widgets/HabitQuestWidgetStore.swift; sourceTree = SOURCE_ROOT; };
 		C10000000000000000000002 /* HabitQuest/Services/HabitQuestWidgetRefreshService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuest/Services/HabitQuestWidgetRefreshService.swift; sourceTree = SOURCE_ROOT; };
 		C10000000000000000000003 /* HabitQuestWidgets/HabitQuestWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitQuestWidgets/HabitQuestWidgets.swift; sourceTree = SOURCE_ROOT; };
@@ -300,6 +306,7 @@
 				A10000000000000000000003 /* HabitQuest/Features/Today/TodayFeatureView.swift */,
 				A10000000000000000000017 /* HabitQuest/Features/Today/TodayDeckViews.swift */,
 				A10000000000000000000020 /* HabitQuest/Features/Today/DailyJourneyVisualView.swift */,
+				A10000000000000000006A /* HabitQuest/Features/Today/StreakFreezeModalView.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -356,6 +363,7 @@
 				A10000000000000000000044 /* HabitQuest/Domain/SubscriptionCatalog.swift */,
 				A10000000000000000000055 /* HabitQuest/Domain/HabitQuestPersonalization.swift */,
 				A10000000000000000000014 /* HabitQuest/Domain/DailyHabitInstanceEngine.swift */,
+				A100000000000000000067 /* HabitQuest/Domain/StreakFreezeModels.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -371,6 +379,7 @@
 				A10000000000000000000026 /* HabitQuest/Persistence/HabitProgressionStore.swift */,
 				A10000000000000000000028 /* HabitQuest/Persistence/HabitAchievementStore.swift */,
 				A10000000000000000000051 /* HabitQuest/Persistence/HabitDaySectionStore.swift */,
+				A100000000000000000068 /* HabitQuest/Persistence/StreakFreezeStore.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -387,6 +396,7 @@
 				A10000000000000000000061 /* HabitQuest/Services/PremiumPromotionalNotificationService.swift */,
 				A10000000000000000000045 /* HabitQuest/Services/SubscriptionManager.swift */,
 				A10000000000000000000021 /* HabitQuest/Services/HabitReminderNotificationService.swift */,
+				A100000000000000000069 /* HabitQuest/Services/StreakFreezeService.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -421,6 +431,7 @@
 				A10000000000000000000046 /* HabitQuestTests/SubscriptionManagerTests.swift */,
 				A10000000000000000000064 /* HabitQuestTests/PremiumExpirationPolicyTests.swift */,
 				A10000000000000000000065 /* HabitQuestTests/HabitQuestWidgetStoreTests.swift */,
+				A10000000000000000006B /* HabitQuestTests/StreakFreezeServiceTests.swift */,
 			);
 			path = HabitQuestTests;
 			sourceTree = "<group>";
@@ -590,6 +601,7 @@
 				A20000000000000000000003 /* HabitQuest/Features/Today/TodayFeatureView.swift in Sources */,
 				A20000000000000000000017 /* HabitQuest/Features/Today/TodayDeckViews.swift in Sources */,
 				A20000000000000000000020 /* HabitQuest/Features/Today/DailyJourneyVisualView.swift in Sources */,
+				A20000000000000000006A /* HabitQuest/Features/Today/StreakFreezeModalView.swift in Sources */,
 				A20000000000000000000004 /* HabitQuest/Features/Habits/HabitsFeatureView.swift in Sources */,
 				A20000000000000000000013 /* HabitQuest/Features/Habits/HabitManagementViews.swift in Sources */,
 				A20000000000000000000005 /* HabitQuest/Features/Analytics/AnalyticsFeatureView.swift in Sources */,
@@ -631,6 +643,9 @@
 				A20000000000000000000055 /* HabitQuest/Domain/HabitQuestPersonalization.swift in Sources */,
 				A20000000000000000000046 /* HabitQuest/Features/Profile/ProfilePremiumSubscriptionDetailView.swift in Sources */,
 				A20000000000000000000047 /* HabitQuest/Features/Premium/PremiumFeatureGateView.swift in Sources */,
+				A200000000000000000067 /* HabitQuest/Domain/StreakFreezeModels.swift in Sources */,
+				A200000000000000000068 /* HabitQuest/Persistence/StreakFreezeStore.swift in Sources */,
+				A200000000000000000069 /* HabitQuest/Services/StreakFreezeService.swift in Sources */,
 				C20000000000000000000001 /* HabitQuest/Widgets/HabitQuestWidgetStore.swift in Sources */,
 				C20000000000000000000002 /* HabitQuest/Services/HabitQuestWidgetRefreshService.swift in Sources */,
 			);
@@ -658,6 +673,7 @@
 				A20000000000000000000056 /* HabitQuestTests/HabitQuestPersonalizationTests.swift in Sources */,
 				A20000000000000000000063 /* HabitQuestTests/PremiumExpirationPolicyTests.swift in Sources */,
 				A20000000000000000000064 /* HabitQuestTests/HabitQuestWidgetStoreTests.swift in Sources */,
+				A20000000000000000006B /* HabitQuestTests/StreakFreezeServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

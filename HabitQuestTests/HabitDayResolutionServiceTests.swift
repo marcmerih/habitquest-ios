@@ -13,7 +13,10 @@ final class HabitDayResolutionServiceTests: XCTestCase {
             habitRepository: habitRepository,
             completionEventStore: completionEventStore,
             dailyHabitStateStore: stateStore,
-            dailyHabitInstanceEngine: engine
+            dailyHabitInstanceEngine: engine,
+            dailyStreakCalculator: DailyStreakCalculator(),
+            streakFreezeStore: LocalStreakFreezeStore.inMemory(),
+            streakFreezeCostCalculator: StreakFreezeCostCalculator()
         )
 
         let habit = Habit(
@@ -71,7 +74,10 @@ final class HabitDayResolutionServiceTests: XCTestCase {
             habitRepository: habitRepository,
             completionEventStore: completionEventStore,
             dailyHabitStateStore: stateStore,
-            dailyHabitInstanceEngine: engine
+            dailyHabitInstanceEngine: engine,
+            dailyStreakCalculator: DailyStreakCalculator(),
+            streakFreezeStore: LocalStreakFreezeStore.inMemory(),
+            streakFreezeCostCalculator: StreakFreezeCostCalculator()
         )
 
         let habit = Habit(
@@ -127,7 +133,10 @@ final class HabitDayResolutionServiceTests: XCTestCase {
             habitRepository: habitRepository,
             completionEventStore: completionEventStore,
             dailyHabitStateStore: stateStore,
-            dailyHabitInstanceEngine: engine
+            dailyHabitInstanceEngine: engine,
+            dailyStreakCalculator: DailyStreakCalculator(),
+            streakFreezeStore: LocalStreakFreezeStore.inMemory(),
+            streakFreezeCostCalculator: StreakFreezeCostCalculator()
         )
 
         let habit = Habit(
@@ -177,7 +186,10 @@ final class HabitDayResolutionServiceTests: XCTestCase {
             habitRepository: habitRepository,
             completionEventStore: completionEventStore,
             dailyHabitStateStore: stateStore,
-            dailyHabitInstanceEngine: engine
+            dailyHabitInstanceEngine: engine,
+            dailyStreakCalculator: DailyStreakCalculator(),
+            streakFreezeStore: LocalStreakFreezeStore.inMemory(),
+            streakFreezeCostCalculator: StreakFreezeCostCalculator()
         )
 
         let habit = Habit(

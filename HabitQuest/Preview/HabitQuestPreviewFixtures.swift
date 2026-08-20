@@ -464,6 +464,7 @@ enum HabitQuestPreviewFixtures {
             entitlementService: premiumEntitlementService
         )
         let dailyHabitInstanceEngine = DailyHabitInstanceEngine()
+        let streakFreezeStore = LocalStreakFreezeStore.inMemory()
         let achievementService = HabitAchievementService(
             achievementStore: achievementStore,
             habitRepository: habitRepository,
@@ -504,7 +505,10 @@ enum HabitQuestPreviewFixtures {
             habitRepository: habitRepository,
             completionEventStore: completionEventStore,
             dailyHabitStateStore: dailyHabitStateStore,
-            dailyHabitInstanceEngine: dailyHabitInstanceEngine
+            dailyHabitInstanceEngine: dailyHabitInstanceEngine,
+            dailyStreakCalculator: DailyStreakCalculator(),
+            streakFreezeStore: streakFreezeStore,
+            streakFreezeCostCalculator: StreakFreezeCostCalculator()
         )
 
         let localDataManagementService = HabitQuestLocalDataManagementService(
@@ -515,6 +519,7 @@ enum HabitQuestPreviewFixtures {
             progressionStore: progressionStore,
             achievementStore: achievementStore,
             notificationPreferencesStore: notificationPreferencesStore,
+            streakFreezeStore: streakFreezeStore,
             dateService: dateService,
             dailyStreakCalculator: DailyStreakCalculator(),
             habitProgressCalculator: HabitProgressCalculator(),
@@ -550,6 +555,14 @@ enum HabitQuestPreviewFixtures {
             widgetSnapshotStore: widgetSnapshotStore,
             widgetRefreshService: widgetRefreshService,
             subscriptionManager: subscriptionManager,
+            streakFreezeService: StreakFreezeService(
+                store: streakFreezeStore,
+                habitRepository: habitRepository,
+                dailyHabitStateStore: dailyHabitStateStore,
+                completionEventStore: completionEventStore,
+                progressionStore: progressionStore,
+                dateService: dateService
+            ),
             habitRepository: habitRepository,
             habitDaySectionStore: habitDaySectionStore,
             dailyHabitStateStore: dailyHabitStateStore,

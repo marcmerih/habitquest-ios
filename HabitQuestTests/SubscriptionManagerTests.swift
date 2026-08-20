@@ -23,6 +23,25 @@ final class SubscriptionManagerTests: XCTestCase {
         XCTAssertEqual(client.loadProductsCallCount, 1)
     }
 
+    func testEmptyProductLoadFallsBackToLocalSubscriptionPlans() async {
+        let client = MockSubscriptionStoreKitClient(
+            accessState: Self.freeAccessState(
+                isEligibleForIntroOffer: false,
+                hadPreviousEntitlement: false
+            ),
+            products: []
+        )
+        let entitlementService = PremiumEntitlementService(accessState: .free)
+        let manager = SubscriptionManager(client: client, entitlementService: entitlementService)
+
+        await manager.startIfNeeded()
+
+        XCTAssertEqual(manager.availableProducts.map(\.id), SubscriptionCatalog.allProductIDs)
+        XCTAssertFalse(manager.availableProducts.isEmpty)
+        XCTAssertTrue(manager.availableProducts.allSatisfy { $0.isEligibleForIntroOffer == true })
+        XCTAssertNil(manager.lastError)
+    }
+
     func testIneligibleFreeUserUsesStandardSubscriptionLanguage() async {
         let client = MockSubscriptionStoreKitClient(
             accessState: Self.freeAccessState(

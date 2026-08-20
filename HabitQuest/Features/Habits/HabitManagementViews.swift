@@ -1054,9 +1054,39 @@ struct ArchivedHabitsView: View {
 
             VStack(spacing: HabitQuestDesignSystem.Spacing.md) {
                 ForEach(habits) { habit in
-                    Button {
-                        onSelectHabit(habit)
-                    } label: {
+                    HabitSwipeActionRow(
+                        onTap: {
+                            onSelectHabit(habit)
+                        },
+                        leadingActions: [
+                            HabitSwipeAction(
+                                title: "Restore",
+                                systemImage: "arrow.uturn.backward",
+                                tint: HabitQuestDesignSystem.Palette.success(for: colorScheme),
+                                accessibilityLabel: "Restore habit"
+                            ) {
+                                onRestoreHabit(habit)
+                            },
+                            HabitSwipeAction(
+                                title: "Edit",
+                                systemImage: "pencil",
+                                tint: HabitQuestDesignSystem.Palette.note(for: colorScheme),
+                                accessibilityLabel: "Edit habit"
+                            ) {
+                                onSelectHabit(habit)
+                            }
+                        ],
+                        trailingActions: [
+                            HabitSwipeAction(
+                                title: "Delete",
+                                systemImage: "trash",
+                                tint: HabitQuestDesignSystem.Palette.dangerMuted(for: colorScheme),
+                                accessibilityLabel: "Delete habit"
+                            ) {
+                                onDeleteHabit(habit)
+                            }
+                        ]
+                    ) {
                         HabitRowCardView(
                             habit: habit,
                             currentStreak: 0,
@@ -1064,29 +1094,6 @@ struct ArchivedHabitsView: View {
                             presentation: .compact,
                             showsEditAffordance: true
                         )
-                    }
-                    .buttonStyle(.plain)
-                    .swipeActions(edge: .leading, allowsFullSwipe: true) {
-                        Button {
-                            onRestoreHabit(habit)
-                        } label: {
-                            Label("Restore", systemImage: "arrow.uturn.backward")
-                        }
-                        .tint(HabitQuestDesignSystem.Palette.success(for: colorScheme))
-
-                        Button {
-                            onSelectHabit(habit)
-                        } label: {
-                            Label("Edit", systemImage: "pencil")
-                        }
-                        .tint(HabitQuestDesignSystem.Palette.note(for: colorScheme))
-                    }
-                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                        Button(role: .destructive) {
-                            onDeleteHabit(habit)
-                        } label: {
-                            Label("Delete", systemImage: "trash")
-                        }
                     }
 
                     if habit.id != habits.last?.id {
@@ -1099,6 +1106,166 @@ struct ArchivedHabitsView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .habitQuestSurface(.raised)
     }
+}
+
+struct HabitSwipeActionRow<Content: View>: View {
+    let onTap: () -> Void
+    let leadingActions: [HabitSwipeAction]
+    let trailingActions: [HabitSwipeAction]
+    @ViewBuilder let content: Content
+
+    @State private var dragOffset: CGFloat = 0
+    @State private var isPerformingAction = false
+    @State private var lastCommittedDirection: SwipeDirection?
+    @Environment(\.colorScheme) private var colorScheme
+
+    private let triggerThreshold: CGFloat = 94
+    private let revealWidth: CGFloat = 82
+
+    var body: some View {
+        ZStack {
+            backgroundActions
+
+            cardSurface
+        }
+        .contentShape(RoundedRectangle(cornerRadius: HabitQuestDesignSystem.Radius.xl, style: .continuous))
+        .simultaneousGesture(dragGesture)
+        .onTapGesture {
+            guard !isPerformingAction, lastCommittedDirection == nil else { return }
+            onTap()
+        }
+    }
+
+    private var cardSurface: some View {
+        content
+            .padding(HabitQuestDesignSystem.Spacing.md)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(
+                RoundedRectangle(cornerRadius: HabitQuestDesignSystem.Radius.xl, style: .continuous)
+                    .fill(HabitQuestDesignSystem.Palette.surfaceRaised(for: colorScheme))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: HabitQuestDesignSystem.Radius.xl, style: .continuous)
+                            .stroke(HabitQuestDesignSystem.Palette.border(for: colorScheme), lineWidth: 1)
+                    )
+            )
+            .offset(x: dragOffset)
+            .scaleEffect(isPerformingAction ? 0.99 : 1)
+            .opacity(lastCommittedDirection == nil ? 1 : 0.95)
+            .allowsHitTesting(!isPerformingAction)
+    }
+
+    private var backgroundActions: some View {
+        HStack(spacing: 0) {
+            if dragOffset > 0 || lastCommittedDirection == .leading {
+                actionRail(for: leadingActions, alignment: .leading, width: max(dragOffset, revealWidth))
+            } else {
+                Spacer(minLength: 0)
+            }
+
+            Spacer(minLength: 0)
+
+            if dragOffset < 0 || lastCommittedDirection == .trailing {
+                actionRail(for: trailingActions, alignment: .trailing, width: max(-dragOffset, revealWidth))
+            } else {
+                Spacer(minLength: 0)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .frame(height: nil, alignment: .center)
+        .opacity(isPerformingAction ? 1 : min(1, abs(dragOffset) / triggerThreshold))
+    }
+
+    private func actionRail(for actions: [HabitSwipeAction], alignment: HorizontalAlignment, width: CGFloat) -> some View {
+        HStack(spacing: 0) {
+            ForEach(Array(actions.enumerated()), id: \.offset) { _, action in
+                Button {
+                    perform(action: action, direction: alignment == .leading ? .leading : .trailing)
+                } label: {
+                    VStack(spacing: HabitQuestDesignSystem.Spacing.xs) {
+                        Image(systemName: action.systemImage)
+                            .font(.system(size: 15, weight: .semibold))
+                        Text(action.title)
+                            .font(HabitQuestDesignSystem.Typography.caption.weight(.semibold))
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .foregroundStyle(action.tint)
+                }
+                .buttonStyle(.plain)
+                .frame(width: revealWidth)
+                .accessibilityLabel(Text(action.accessibilityLabel))
+            }
+        }
+        .frame(width: width, alignment: alignment == .leading ? .leading : .trailing)
+        .frame(maxHeight: .infinity)
+        .padding(.vertical, HabitQuestDesignSystem.Spacing.md)
+        .background(
+            RoundedRectangle(cornerRadius: HabitQuestDesignSystem.Radius.xl, style: .continuous)
+                .fill((actions.first?.tint ?? HabitQuestDesignSystem.Palette.accent(for: colorScheme)).opacity(0.12))
+                .overlay(
+                    RoundedRectangle(cornerRadius: HabitQuestDesignSystem.Radius.xl, style: .continuous)
+                        .stroke((actions.first?.tint ?? HabitQuestDesignSystem.Palette.accent(for: colorScheme)).opacity(0.16), lineWidth: 1)
+                )
+        )
+    }
+
+    private var dragGesture: some Gesture {
+        DragGesture(minimumDistance: 8, coordinateSpace: .local)
+            .onChanged { value in
+                guard !isPerformingAction else { return }
+
+                if abs(value.translation.width) > abs(value.translation.height) {
+                    dragOffset = value.translation.width
+                    lastCommittedDirection = nil
+                }
+            }
+            .onEnded { value in
+                guard !isPerformingAction else { return }
+
+                let horizontal = value.translation.width
+                if horizontal > triggerThreshold, let action = leadingActions.first {
+                    perform(action: action, direction: .leading)
+                } else if horizontal < -triggerThreshold, let action = trailingActions.first {
+                    perform(action: action, direction: .trailing)
+                } else {
+                    withAnimation(HabitQuestDesignSystem.Motion.card) {
+                        dragOffset = 0
+                    }
+                }
+            }
+    }
+
+    private func perform(action: HabitSwipeAction, direction: SwipeDirection) {
+        guard !isPerformingAction else { return }
+        isPerformingAction = true
+        lastCommittedDirection = direction
+
+        withAnimation(HabitQuestDesignSystem.Motion.card) {
+            dragOffset = direction == .leading ? 320 : -320
+        }
+
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 120_000_000)
+            action.action()
+            withAnimation(HabitQuestDesignSystem.Motion.card) {
+                dragOffset = 0
+            }
+            isPerformingAction = false
+            lastCommittedDirection = nil
+        }
+    }
+}
+
+struct HabitSwipeAction {
+    let title: String
+    let systemImage: String
+    let tint: Color
+    let accessibilityLabel: String
+    let action: () -> Void
+}
+
+enum SwipeDirection {
+    case leading
+    case trailing
 }
 
 private extension HabitRhythm {

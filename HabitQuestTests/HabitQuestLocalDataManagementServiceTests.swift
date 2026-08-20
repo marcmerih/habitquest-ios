@@ -117,6 +117,7 @@ final class HabitQuestLocalDataManagementServiceTests: XCTestCase {
             progressionStore: LocalHabitProgressionStore.inMemory(),
             achievementStore: LocalHabitAchievementStore.inMemory(),
             notificationPreferencesStore: LocalNotificationPreferencesStore.inMemory(),
+            streakFreezeStore: LocalStreakFreezeStore.inMemory(),
             dateService: FixedDateService(now: Self.referenceDate, calendar: Self.calendar),
             dailyStreakCalculator: DailyStreakCalculator(),
             habitProgressCalculator: HabitProgressCalculator(),

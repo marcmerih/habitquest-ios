@@ -34,6 +34,7 @@ struct AppRootView: View {
             await environment.subscriptionManager.startIfNeeded()
             try? await Task.sleep(nanoseconds: reduceMotion ? 500_000_000 : 700_000_000)
             await resolveElapsedDays()
+            environment.streakFreezeService.syncState()
 
             withAnimation(reduceMotion ? .easeOut(duration: 0.12) : HabitQuestDesignSystem.Motion.standard) {
                 phase = .main
@@ -61,6 +62,7 @@ struct AppRootView: View {
             Task {
                 let habits = (try? environment.habitRepository.fetchHabits()) ?? []
                 await resolveElapsedDays()
+                environment.streakFreezeService.syncState()
                 await environment.premiumPromotionalNotificationService.syncPromotionalNotification(
                     for: habits,
                     now: environment.dateService.now,
@@ -72,12 +74,14 @@ struct AppRootView: View {
         .onReceive(NotificationCenter.default.publisher(for: .NSCalendarDayChanged)) { _ in
             Task {
                 await resolveElapsedDays()
+                environment.streakFreezeService.syncState()
                 environment.widgetRefreshService.refreshSnapshots()
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .NSSystemTimeZoneDidChange)) { _ in
             Task {
                 await resolveElapsedDays()
+                environment.streakFreezeService.syncState()
                 environment.widgetRefreshService.refreshSnapshots()
             }
         }

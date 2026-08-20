@@ -13,6 +13,8 @@ struct AnalyticsFeatureView: View {
     @State private var habitsByID: [UUID: Habit] = [:]
     @State private var dailyStreakSummary: DailyStreakSummary?
     @State private var hasHabits = false
+    @State private var showsAnalyticsWarmupMessage = false
+    @State private var hasAnalyticsData = false
     @State private var isLoading = false
     @State private var loadError: String?
     @State private var premiumFeatureGateDescriptor: PremiumFeatureGateDescriptor?
@@ -36,8 +38,10 @@ struct AnalyticsFeatureView: View {
                         loadingState
                     } else if let loadError {
                         errorState(message: loadError)
-                    } else if let report {
+                    } else if let report, hasAnalyticsData {
                         content(for: report)
+                    } else if report != nil {
+                        notEnoughDataState
                     } else {
                         emptyState
                     }
@@ -86,11 +90,11 @@ struct AnalyticsFeatureView: View {
                 .font(HabitQuestDesignSystem.Typography.display)
                 .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
 
-            Text("Reflection-first insight from your local habit history.")
+            Text("Local completion history, charts, and totals.")
                 .font(HabitQuestDesignSystem.Typography.body)
                 .foregroundStyle(HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme))
 
-            Text("Insight comes first. Charts follow. Metrics stay quiet.")
+            Text("Just the local data you’ve collected.")
                 .font(HabitQuestDesignSystem.Typography.caption)
                 .foregroundStyle(HabitQuestDesignSystem.Palette.textTertiary(for: colorScheme))
         }
@@ -118,44 +122,67 @@ struct AnalyticsFeatureView: View {
     @ViewBuilder
     private func content(for report: HabitAnalyticsReport) -> some View {
         VStack(spacing: HabitQuestDesignSystem.Spacing.xl) {
-            insightStack(for: report)
-            premiumAnalyticsSection()
-            premiumDiscoverySection(for: report)
-            momentumSection(for: report)
+            if showsAnalyticsWarmupMessage {
+                analyticsWarmupSection
+            }
+
             completionSection(for: report)
-            streakSection(for: report)
-            habitPerformanceSection(for: report)
-            rhythmSection(for: report)
-            deferralsSection(for: report)
             personalBestSection(for: report)
+            streakSection(for: report)
+            momentumSection(for: report)
+            rhythmSection(for: report)
+            habitPerformanceSection(for: report)
+            deferralsSection(for: report)
+            premiumOptionsSection(for: report)
         }
     }
 
-    private func insightStack(for report: HabitAnalyticsReport) -> some View {
-        let insights = analyticsInsights(for: report)
+    private var analyticsWarmupSection: some View {
+        VStack(alignment: .leading, spacing: HabitQuestDesignSystem.Spacing.sm) {
+            HStack(alignment: .center, spacing: HabitQuestDesignSystem.Spacing.md) {
+                Circle()
+                    .fill(HabitQuestDesignSystem.Palette.note(for: colorScheme).opacity(0.22))
+                    .frame(width: 44, height: 44)
+                    .overlay(
+                        Image(systemName: "chart.bar")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundStyle(HabitQuestDesignSystem.Palette.note(for: colorScheme))
+                    )
 
-        return VStack(alignment: .leading, spacing: HabitQuestDesignSystem.Spacing.md) {
-            sectionHeader(
-                eyebrow: "Observations",
-                title: "What stands out",
-                subtitle: "Rule-based, local, and calm."
-            )
+                VStack(alignment: .leading, spacing: HabitQuestDesignSystem.Spacing.xxs) {
+                    Text("Analytics need more history")
+                        .font(HabitQuestDesignSystem.Typography.headline)
+                        .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
 
-            if insights.isEmpty {
-                CalmEmptyStateCard(
-                    icon: "chart.bar",
-                    title: "Not enough history yet",
-                    message: "As your completion history fills in, HabitQuest will surface gentle patterns here.",
-                    accent: HabitQuestDesignSystem.Palette.note(for: colorScheme),
-                    supportingText: "A few calm completions are enough for the first observations to appear.",
-                    primaryActionTitle: hasHabits ? nil : "Open Habits",
-                    primaryAction: hasHabits ? nil : onOpenHabits,
-                )
-            } else {
-                ForEach(insights) { insight in
-                    AnalyticsInsightCard(insight: insight)
+                    Text("Use HabitQuest for the next few days after creating habits. Once there is enough local history, the charts will populate.")
+                        .font(HabitQuestDesignSystem.Typography.callout)
+                        .foregroundStyle(HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme))
                 }
             }
+        }
+        .habitQuestSurface(.raised)
+    }
+
+    private var notEnoughDataState: some View {
+        CalmEmptyStateCard(
+            icon: "chart.bar",
+            title: "Not enough data yet",
+            message: hasHabits
+                ? "Complete a few habits and the Analytics charts will appear here."
+                : "Create your first habit and complete it a few times. Then Analytics will have something to show.",
+            accent: HabitQuestDesignSystem.Palette.accent(for: colorScheme),
+            supportingText: "Right now there isn’t enough completed history to display meaningful analytics.",
+            primaryActionTitle: hasHabits ? nil : "Open Habits",
+            primaryAction: hasHabits ? nil : onOpenHabits,
+        )
+    }
+
+    @ViewBuilder
+    private func premiumOptionsSection(for report: HabitAnalyticsReport) -> some View {
+        if environment.premiumEntitlementService.accessState.isPremiumOrTrial {
+            premiumAnalyticsSection()
+        } else {
+            premiumDiscoverySection(for: report)
         }
     }
 
@@ -168,7 +195,7 @@ struct AnalyticsFeatureView: View {
                 sectionHeader(
                     eyebrow: "Premium analytics",
                     title: "Long-range patterns",
-                    subtitle: "A quieter, deeper read on how your habits behave over time."
+                    subtitle: "30, 90, 365, and all-time windows."
                 )
 
                 VStack(spacing: HabitQuestDesignSystem.Spacing.md) {
@@ -228,14 +255,6 @@ struct AnalyticsFeatureView: View {
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: HabitQuestDesignSystem.Spacing.md) {
                         ForEach(premiumAnalyticsReport.windowSummaries, id: \.preset) { summary in
                             PremiumAnalyticsWindowSummaryCard(summary: summary)
-                        }
-                    }
-                }
-
-                if !premiumAnalyticsReport.insights.isEmpty {
-                    VStack(spacing: HabitQuestDesignSystem.Spacing.md) {
-                        ForEach(premiumAnalyticsReport.insights) { insight in
-                            PremiumAnalyticsInsightCard(insight: insight)
                         }
                     }
                 }
@@ -310,7 +329,7 @@ struct AnalyticsFeatureView: View {
             sectionHeader(
                 eyebrow: "Momentum",
                 title: "Recent consistency",
-                subtitle: "A rolling score that rewards returning, not perfection."
+                subtitle: "A rolling score based on recent completion history."
             )
 
             VStack(alignment: .leading, spacing: HabitQuestDesignSystem.Spacing.lg) {
@@ -390,7 +409,7 @@ struct AnalyticsFeatureView: View {
                     items: [
                         AnalyticsMetricItem(
                             title: "Current streak",
-                            value: "\(report.personalBests.longestDailyStreak == 0 ? report.personalBests.longestDailyStreak : report.personalBests.longestDailyStreak)",
+                            value: "\(dailyStreakSummary?.currentDailyStreak ?? 0)",
                             subtitle: "days",
                             accent: HabitQuestDesignSystem.Palette.accent(for: colorScheme)
                         ),
@@ -541,10 +560,21 @@ struct AnalyticsFeatureView: View {
             )
 
             if let bestHabit = rankedHabits(for: report).first {
-                AnalyticsReflectionRow(
-                    title: "\(bestHabit.habit.title) has been your strongest habit",
-                    details: "It currently leads your habit streaks with \(bestHabit.longestStreak) completed occurrences.",
-                    metric: "\(bestHabit.totalCompletions) completions"
+                AnalyticsMetricRow(
+                    items: [
+                        AnalyticsMetricItem(
+                            title: "Top habit",
+                            value: bestHabit.habit.title,
+                            subtitle: "\(bestHabit.totalCompletions) completions",
+                            accent: HabitQuestDesignSystem.Palette.note(for: colorScheme)
+                        ),
+                        AnalyticsMetricItem(
+                            title: "Top habit streak",
+                            value: "\(bestHabit.longestStreak)",
+                            subtitle: "best run",
+                            accent: HabitQuestDesignSystem.Palette.success(for: colorScheme)
+                        )
+                    ]
                 )
             }
         }
@@ -573,7 +603,7 @@ struct AnalyticsFeatureView: View {
             sectionHeader(
                 eyebrow: "Rhythm",
                 title: "Daily rhythm patterns",
-                subtitle: "Morning, day, evening, and anytime are treated as contextual signals."
+                subtitle: "Morning, day, evening, and anytime grouped by local completion history."
             )
 
             VStack(spacing: HabitQuestDesignSystem.Spacing.md) {
@@ -609,14 +639,6 @@ struct AnalyticsFeatureView: View {
                         AxisValueLabel()
                     }
                 }
-
-                if let insight = rhythmInsight(for: report) {
-                    AnalyticsReflectionRow(
-                        title: insight.title,
-                        details: insight.body,
-                        metric: insight.metric
-                    )
-                }
             }
         }
         .habitQuestSurface(.raised)
@@ -633,10 +655,9 @@ struct AnalyticsFeatureView: View {
             let items = rankedDeferrals(for: report)
 
             if items.isEmpty {
-                AnalyticsEmptyInsightCard(
-                    title: "Nothing is being deferred yet",
-                    message: "As you start using Not Now, the habits that need a softer setup will appear here."
-                )
+                Text("No deferrals yet.")
+                    .font(HabitQuestDesignSystem.Typography.callout)
+                    .foregroundStyle(HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme))
             } else {
                 VStack(spacing: HabitQuestDesignSystem.Spacing.md) {
                     ForEach(Array(items.prefix(3)), id: \.habit.id) { item in
@@ -671,7 +692,7 @@ struct AnalyticsFeatureView: View {
             ProgressView()
                 .tint(HabitQuestDesignSystem.Palette.accent(for: colorScheme))
 
-            Text("Loading insights...")
+            Text("Loading data...")
                 .font(HabitQuestDesignSystem.Typography.callout)
                 .foregroundStyle(HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme))
         }
@@ -682,12 +703,12 @@ struct AnalyticsFeatureView: View {
     private var emptyState: some View {
         CalmEmptyStateCard(
             icon: "chart.bar",
-            title: "Your analytics will appear here",
+            title: "Analytics will appear here",
             message: hasHabits
-                ? "Complete a few habits and HabitQuest will turn that history into useful insights."
-                : "Create your first habit and complete it a few times. HabitQuest will turn that history into useful insights.",
+                ? "Complete a few habits and the charts will populate."
+                : "Create your first habit and complete it a few times. The charts will populate once there is local history.",
             accent: HabitQuestDesignSystem.Palette.accent(for: colorScheme),
-            supportingText: hasHabits ? "The charts need a little history before they become useful." : "Start in Habits when you’re ready.",
+            supportingText: hasHabits ? "The charts need a little history before they populate." : "Start in Habits when you’re ready.",
             primaryActionTitle: hasHabits ? nil : "Open Habits",
             primaryAction: hasHabits ? nil : onOpenHabits,
         )
@@ -743,6 +764,7 @@ struct AnalyticsFeatureView: View {
             let states = try environment.dailyHabitStateStore.loadStates()
             let events = try environment.completionEventStore.loadEvents()
             hasHabits = !habits.isEmpty
+            showsAnalyticsWarmupMessage = analyticsNeedsWarmup(for: habits, now: now, calendar: calendar)
 
             report = environment.habitAnalyticsCalculator.report(
                 for: habits,
@@ -766,6 +788,7 @@ struct AnalyticsFeatureView: View {
                 upTo: now,
                 calendar: calendar
             )
+            hasAnalyticsData = (report?.totalCompletions ?? 0) > 0
         } catch {
             loadError = (error as NSError).localizedDescription
             report = nil
@@ -773,27 +796,23 @@ struct AnalyticsFeatureView: View {
             habitsByID = [:]
             dailyStreakSummary = nil
             hasHabits = false
+            showsAnalyticsWarmupMessage = false
+            hasAnalyticsData = false
         }
 
         isLoading = false
     }
 
-    private func analyticsInsights(for report: HabitAnalyticsReport) -> [AnalyticsInsight] {
-        var insights: [AnalyticsInsight] = []
-
-        if let insight = momentumInsight(for: report) {
-            insights.append(insight)
+    private func analyticsNeedsWarmup(for habits: [Habit], now: Date, calendar: Calendar) -> Bool {
+        guard let firstHabitCreatedAt = habits.map(\.createdAt).min() else {
+            return false
         }
 
-        if let insight = rhythmInsight(for: report) {
-            insights.append(insight)
-        }
+        let firstHabitDay = calendar.startOfDay(for: firstHabitCreatedAt)
+        let currentDay = calendar.startOfDay(for: now)
+        let daysSinceFirstHabit = calendar.dateComponents([.day], from: firstHabitDay, to: currentDay).day ?? 0
 
-        if let insight = deferralInsight(for: report) {
-            insights.append(insight)
-        }
-
-        return Array(insights.prefix(3))
+        return daysSinceFirstHabit < 3
     }
 
     private func dailyCompletionAccessibilityValue(for report: HabitAnalyticsReport) -> String {
@@ -833,133 +852,6 @@ struct AnalyticsFeatureView: View {
         let current = Int(report.momentumSummary.currentMomentum.rounded())
         let previous = Int(report.momentumSummary.previousMomentum.rounded())
         return "Current \(current) out of 100. Previous \(previous) out of 100. Trend \(report.momentumSummary.trend.direction.title.lowercased())."
-    }
-
-    private func momentumInsight(for report: HabitAnalyticsReport) -> AnalyticsInsight? {
-        let current = report.momentumSummary.currentMomentum
-        let previous = report.momentumSummary.previousMomentum
-        let delta = current - previous
-
-        if current >= 80 {
-            return AnalyticsInsight(
-                eyebrow: "Momentum",
-                title: "Your Momentum is strong.",
-                body: "You’re holding a steady rhythm, and the recent pattern looks calm and sustainable.",
-                metric: "\(Int(current.rounded())) / 100",
-                accent: HabitQuestDesignSystem.Palette.success(for: colorScheme)
-            )
-        }
-
-        if delta >= 4 {
-            return AnalyticsInsight(
-                eyebrow: "Momentum",
-                title: "Your Momentum is rising.",
-                body: "Recent completions are lifting the score in a gradual, sustainable way.",
-                metric: "+\(Int(delta.rounded())) vs previous",
-                accent: HabitQuestDesignSystem.Palette.accent(for: colorScheme)
-            )
-        }
-
-        if delta <= -4 {
-            return AnalyticsInsight(
-                eyebrow: "Momentum",
-                title: "Momentum has softened slightly.",
-                body: "The change is gradual, which usually means your habits are simply asking for a quieter setup.",
-                metric: "\(Int(current.rounded())) / 100",
-                accent: HabitQuestDesignSystem.Palette.note(for: colorScheme)
-            )
-        }
-
-        return AnalyticsInsight(
-            eyebrow: "Momentum",
-            title: "Momentum is holding steady.",
-            body: "Your recent behavior looks balanced rather than all-or-nothing.",
-            metric: "\(Int(current.rounded())) / 100",
-            accent: HabitQuestDesignSystem.Palette.accentSoft(for: colorScheme)
-        )
-    }
-
-    private func rhythmInsight(for report: HabitAnalyticsReport) -> AnalyticsInsight? {
-        let morning = report.completionBehaviorByDailyRhythm.first(where: { $0.rhythm == .morning })?.completionRate ?? 0
-        let day = report.completionBehaviorByDailyRhythm.first(where: { $0.rhythm == .day })?.completionRate ?? 0
-        let evening = report.completionBehaviorByDailyRhythm.first(where: { $0.rhythm == .evening })?.completionRate ?? 0
-        let anytime = report.completionBehaviorByDailyRhythm.first(where: { $0.rhythm == .anytime })?.completionRate ?? 0
-
-        let entries: [(HabitRhythm, Double)] = [
-            (.morning, morning),
-            (.day, day),
-            (.evening, evening),
-            (.anytime, anytime)
-        ]
-
-        guard let best = entries.max(by: { $0.1 < $1.1 }) else {
-            return nil
-        }
-
-        switch best.0 {
-        case .morning:
-            return AnalyticsInsight(
-                eyebrow: "Daily Rhythm",
-                title: "Your morning habits have been the most consistent.",
-                body: "Morning habits are leading the month, which suggests your early routine is carrying a lot of the load.",
-                metric: "\(Int(best.1.rounded()))% completion",
-                accent: HabitQuestDesignSystem.Palette.note(for: colorScheme)
-            )
-        case .day:
-            return AnalyticsInsight(
-                eyebrow: "Daily Rhythm",
-                title: "Your daytime habits are leading.",
-                body: "Midday routines are the easiest fit right now, especially when they stay simple and well-timed.",
-                metric: "\(Int(best.1.rounded()))% completion",
-                accent: HabitQuestDesignSystem.Palette.success(for: colorScheme)
-            )
-        case .evening:
-            return AnalyticsInsight(
-                eyebrow: "Daily Rhythm",
-                title: "Evening habits are your strongest pattern.",
-                body: "That usually means your wind-down routine has a steady shape and good timing.",
-                metric: "\(Int(best.1.rounded()))% completion",
-                accent: HabitQuestDesignSystem.Palette.accent(for: colorScheme)
-            )
-        case .anytime:
-            return AnalyticsInsight(
-                eyebrow: "Daily Rhythm",
-                title: "Anytime habits are showing up consistently.",
-                body: "Flexible habits are giving your routine room to breathe without losing momentum.",
-                metric: "\(Int(best.1.rounded()))% completion",
-                accent: HabitQuestDesignSystem.Palette.accentSoft(for: colorScheme)
-            )
-        }
-    }
-
-    private func deferralInsight(for report: HabitAnalyticsReport) -> AnalyticsInsight? {
-        guard let mostDeferred = rankedDeferrals(for: report).first else {
-            return nil
-        }
-
-        let rate = mostDeferred.deferralRate
-
-        if rate >= 40 {
-            return AnalyticsInsight(
-                eyebrow: "Deferrals",
-                title: "\(mostDeferred.habit.title) is often moved to later.",
-                body: "That usually means the habit wants a smaller intention, a different time, or a softer cue.",
-                metric: "\(Int(rate.rounded()))% deferred",
-                accent: HabitQuestDesignSystem.Palette.note(for: colorScheme)
-            )
-        }
-
-        if rate >= 20 {
-            return AnalyticsInsight(
-                eyebrow: "Deferrals",
-                title: "A few habits are regularly waiting for later.",
-                body: "Nothing is broken. HabitQuest is just showing you which routines are asking for more room.",
-                metric: "\(Int(rate.rounded()))% deferred",
-                accent: HabitQuestDesignSystem.Palette.accentSoft(for: colorScheme)
-            )
-        }
-
-        return nil
     }
 
     private func rankedHabits(for report: HabitAnalyticsReport) -> [AnalyticsHabitPerformanceItem] {
@@ -1059,15 +951,6 @@ struct AnalyticsFeatureView: View {
     }
 }
 
-private struct AnalyticsInsight: Identifiable {
-    let id = UUID()
-    let eyebrow: String
-    let title: String
-    let body: String
-    let metric: String
-    let accent: Color
-}
-
 private struct AnalyticsHabitPerformanceItem {
     let habit: Habit
     let completionRate: Double
@@ -1113,99 +996,6 @@ private struct AnalyticsMetricRow: View {
                 .habitQuestSurface(.base, cornerRadius: HabitQuestDesignSystem.Radius.lg, padding: HabitQuestDesignSystem.Spacing.md)
             }
         }
-    }
-}
-
-private struct AnalyticsReflectionRow: View {
-    let title: String
-    let details: String
-    let metric: String
-    @Environment(\.colorScheme) private var colorScheme
-
-    var body: some View {
-        HStack(alignment: .top, spacing: HabitQuestDesignSystem.Spacing.md) {
-            Circle()
-                .fill(HabitQuestDesignSystem.Palette.accentSoft(for: colorScheme).opacity(0.65))
-                .frame(width: 12, height: 12)
-                .padding(.top, 6)
-
-            VStack(alignment: .leading, spacing: HabitQuestDesignSystem.Spacing.xs) {
-                Text(title)
-                    .font(HabitQuestDesignSystem.Typography.headline)
-                    .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
-
-                Text(details)
-                    .font(HabitQuestDesignSystem.Typography.callout)
-                    .foregroundStyle(HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme))
-
-                Text(metric)
-                    .font(HabitQuestDesignSystem.Typography.caption.weight(.semibold))
-                    .foregroundStyle(HabitQuestDesignSystem.Palette.accent(for: colorScheme))
-                    .tracking(0.8)
-            }
-        }
-        .habitQuestSurface(.base, cornerRadius: HabitQuestDesignSystem.Radius.lg, padding: HabitQuestDesignSystem.Spacing.md)
-    }
-}
-
-private struct AnalyticsInsightCard: View {
-    let insight: AnalyticsInsight
-    @Environment(\.colorScheme) private var colorScheme
-
-    var body: some View {
-        HStack(alignment: .top, spacing: HabitQuestDesignSystem.Spacing.md) {
-            Circle()
-                .fill(insight.accent.opacity(0.24))
-                .frame(width: 44, height: 44)
-                .overlay(
-                    Image(systemName: "sparkles")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(insight.accent)
-                )
-
-            VStack(alignment: .leading, spacing: HabitQuestDesignSystem.Spacing.xs) {
-                Text(insight.eyebrow.uppercased())
-                    .font(HabitQuestDesignSystem.Typography.caption.weight(.semibold))
-                    .foregroundStyle(HabitQuestDesignSystem.Palette.textTertiary(for: colorScheme))
-                    .tracking(1.1)
-
-                Text(insight.title)
-                    .font(HabitQuestDesignSystem.Typography.headline)
-                    .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
-
-                Text(insight.body)
-                    .font(HabitQuestDesignSystem.Typography.callout)
-                    .foregroundStyle(HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme))
-
-                Text(insight.metric)
-                    .font(HabitQuestDesignSystem.Typography.caption.weight(.semibold))
-                    .foregroundStyle(insight.accent)
-                    .tracking(0.8)
-            }
-
-            Spacer(minLength: 0)
-        }
-        .habitQuestSurface(.base, cornerRadius: HabitQuestDesignSystem.Radius.lg, padding: HabitQuestDesignSystem.Spacing.md)
-    }
-}
-
-private struct AnalyticsEmptyInsightCard: View {
-    let title: String
-    let message: String
-    @Environment(\.colorScheme) private var colorScheme
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: HabitQuestDesignSystem.Spacing.xs) {
-            Text(title)
-                .font(HabitQuestDesignSystem.Typography.headline)
-                .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
-
-            Text(message)
-                .font(HabitQuestDesignSystem.Typography.callout)
-                .foregroundStyle(HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme))
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .habitQuestSurface(.base, cornerRadius: HabitQuestDesignSystem.Radius.lg, padding: HabitQuestDesignSystem.Spacing.md)
     }
 }
 
@@ -1431,47 +1221,6 @@ private struct PremiumAnalyticsComparisonCard: View {
     private func formatDelta(_ value: Double) -> String {
         let prefix = value >= 0 ? "+" : ""
         return "\(prefix)\(Int(value.rounded()))"
-    }
-}
-
-private struct PremiumAnalyticsInsightCard: View {
-    let insight: HabitPremiumAnalyticsInsight
-    @Environment(\.colorScheme) private var colorScheme
-
-    var body: some View {
-        HStack(alignment: .top, spacing: HabitQuestDesignSystem.Spacing.md) {
-            Circle()
-                .fill(HabitQuestDesignSystem.Palette.accentSoft(for: colorScheme).opacity(0.24))
-                .frame(width: 44, height: 44)
-                .overlay(
-                    Image(systemName: "sparkles")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(HabitQuestDesignSystem.Palette.accent(for: colorScheme))
-                )
-
-            VStack(alignment: .leading, spacing: HabitQuestDesignSystem.Spacing.xs) {
-                Text("Premium insight")
-                    .font(HabitQuestDesignSystem.Typography.caption.weight(.semibold))
-                    .foregroundStyle(HabitQuestDesignSystem.Palette.textTertiary(for: colorScheme))
-                    .tracking(1.1)
-
-                Text(insight.title)
-                    .font(HabitQuestDesignSystem.Typography.headline)
-                    .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
-
-                Text(insight.detail)
-                    .font(HabitQuestDesignSystem.Typography.callout)
-                    .foregroundStyle(HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme))
-
-                Text(insight.metric)
-                    .font(HabitQuestDesignSystem.Typography.caption.weight(.semibold))
-                    .foregroundStyle(HabitQuestDesignSystem.Palette.accent(for: colorScheme))
-                    .tracking(0.8)
-            }
-
-            Spacer(minLength: 0)
-        }
-        .habitQuestSurface(.base, cornerRadius: HabitQuestDesignSystem.Radius.lg, padding: HabitQuestDesignSystem.Spacing.md)
     }
 }
 

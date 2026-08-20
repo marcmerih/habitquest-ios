@@ -83,6 +83,20 @@ final class HabitMilestonesTests: XCTestCase {
         XCTAssertEqual(try store.loadAchievements().count, 1)
     }
 
+    func testAchievementCatalogContainsABroadSetOfMilestones() {
+        let habits = [
+            Habit(title: "Meditate", createdAt: Self.day1Morning, updatedAt: Self.day1Morning),
+            Habit(title: "Read", createdAt: Self.day1Morning, updatedAt: Self.day1Morning),
+            Habit(title: "Stretch", createdAt: Self.day1Morning, updatedAt: Self.day1Morning)
+        ]
+
+        let definitions = HabitAchievementCatalog.definitions(for: habits)
+
+        XCTAssertGreaterThan(definitions.count, 100)
+        XCTAssertTrue(definitions.contains(where: { $0.id == "firstHabitCompleted" }))
+        XCTAssertTrue(definitions.contains(where: { $0.id.hasPrefix("habitStreak.") }))
+    }
+
     private static let calendar: Calendar = {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = TimeZone(secondsFromGMT: 0) ?? .current

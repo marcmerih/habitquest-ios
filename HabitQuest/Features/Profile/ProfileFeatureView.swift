@@ -1,6 +1,7 @@
 import SwiftUI
 import UIKit
 import UserNotifications
+import PhotosUI
 
 struct ProfileFeatureView: View {
     @ObservedObject var subscriptionManager: SubscriptionManager
@@ -12,10 +13,14 @@ struct ProfileFeatureView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-    @AppStorage(HabitQuestProfileKeys.displayName) private var displayName = "Local member"
+    @AppStorage(HabitQuestProfileKeys.displayName) private var displayName = ""
+    @AppStorage(HabitQuestProfileKeys.aliasName) private var profileAlias = ""
+    @AppStorage(HabitQuestProfileKeys.avatarSymbolName) private var profileAvatarSymbolName = ""
+    @AppStorage(HabitQuestProfileKeys.avatarImageData) private var profileAvatarImageData = Data()
     @AppStorage(HabitQuestAppearanceMode.storageKey) private var appearanceModeRaw = HabitQuestAppearanceMode.system.rawValue
     @AppStorage(HabitQuestOnboardingState.completedKey) private var hasCompletedOnboarding = false
 
+    @State private var habits: [Habit] = []
     @State private var progressionSummary = HabitProgressionCalculator().summary(from: .default)
     @State private var achievements: [HabitAchievement] = []
     @State private var statistics = ProfileStatisticsSnapshot()
@@ -23,6 +28,8 @@ struct ProfileFeatureView: View {
     @State private var notificationAuthorizationStatus: UNAuthorizationStatus = .notDetermined
     @State private var exportItem: ProfileExportItem?
     @State private var statusMessage: String?
+    @State private var toastMessage: String?
+    @State private var toastDismissTask: Task<Void, Never>?
     @State private var isPresentingDeleteConfirmation = false
     @State private var isPresentingPremiumDetail = false
     @State private var premiumFeatureGateDescriptor: PremiumFeatureGateDescriptor?
@@ -30,9 +37,14 @@ struct ProfileFeatureView: View {
     @State private var isPresentingPremiumPaywall = false
     @State private var premiumPaywallSourceMetadata: PremiumPaywallSourceMetadata?
     @State private var isPerformingDataAction = false
+    @State private var isPresentingProfileEditor = false
+    @State private var draftDisplayName = ""
+    @State private var draftAvatarSymbolName = ""
+    @State private var draftAvatarImageData = Data()
+    @State private var showAllAchievements = false
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .top) {
             HabitQuestScreenBackground()
 
             ScrollView {
@@ -41,24 +53,24 @@ struct ProfileFeatureView: View {
                         statusBanner(message: statusMessage)
                     }
 
-                    identityCard
-                    settingsOverviewCard
                     premiumCard
+                    identityCard
                     progressionCard
                     statisticsCard
                     achievementsCard
-                    notificationCard
-                    appearanceCard
-                    personalizationCard
-                    premiumDiscoveryCard
-                    accessibilityCard
-                    privacyCard
-                    appInformationCard
-                    dataManagementCard
+                    settingsCard
+                    footerFinePrint
                 }
                 .padding(.horizontal, HabitQuestDesignSystem.Spacing.pageHorizontal)
                 .padding(.top, HabitQuestDesignSystem.Spacing.lg)
                 .padding(.bottom, HabitQuestDesignSystem.Spacing.xl)
+            }
+
+            if let toastMessage {
+                ProfileToast(message: toastMessage)
+                    .padding(.horizontal, HabitQuestDesignSystem.Spacing.pageHorizontal)
+                    .padding(.top, HabitQuestDesignSystem.Spacing.md)
+                    .transition(.move(edge: .top).combined(with: .opacity))
             }
         }
         .sheet(item: $exportItem) { item in
@@ -129,7 +141,19 @@ struct ProfileFeatureView: View {
         } message: {
             Text("This removes habits, history, achievements, reminders, and local preferences from this device.")
         }
+        .sheet(isPresented: $isPresentingProfileEditor) {
+            ProfileIdentityEditorView(
+                displayName: $draftDisplayName,
+                avatarSymbolName: $draftAvatarSymbolName,
+                avatarImageData: $draftAvatarImageData,
+                onSave: saveProfileIdentity,
+                onCancel: {
+                    isPresentingProfileEditor = false
+                }
+            )
+        }
         .task {
+            ensureProfileIdentityDefaults()
             await loadProfileContent()
         }
     }
@@ -137,29 +161,44 @@ struct ProfileFeatureView: View {
     private var identityCard: some View {
         VStack(alignment: .leading, spacing: HabitQuestDesignSystem.Spacing.md) {
             HStack(spacing: HabitQuestDesignSystem.Spacing.md) {
-                ZStack {
-                    Circle()
-                        .fill(HabitQuestDesignSystem.Palette.accentSoft(for: colorScheme).opacity(0.75))
-                        .frame(width: 56, height: 56)
-
-                    Text(displayInitials)
-                        .font(HabitQuestDesignSystem.Typography.callout.weight(.semibold))
-                        .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
+                Button {
+                    beginEditingProfileIdentity()
+                } label: {
+                    avatarBadgeView
                 }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Edit profile image and name")
+                .accessibilityHint("Open profile editing.")
 
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Local profile")
+                    Text("Profile")
                         .font(HabitQuestDesignSystem.Typography.caption.weight(.semibold))
                         .foregroundStyle(HabitQuestDesignSystem.Palette.textTertiary(for: colorScheme))
-                    TextField("Display name", text: $displayName)
-                        .textInputAutocapitalization(.words)
-                        .autocorrectionDisabled()
-                        .font(HabitQuestDesignSystem.Typography.title2)
-                        .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
-                    Text("Used for gentle greetings like “Good morning, Alex” in Today.")
+
+                    HStack(alignment: .firstTextBaseline, spacing: HabitQuestDesignSystem.Spacing.xs) {
+                        Text(profileDisplayName)
+                            .font(HabitQuestDesignSystem.Typography.title2)
+                            .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.85)
+
+                        Button {
+                            beginEditingProfileIdentity()
+                        } label: {
+                            Image(systemName: "pencil.circle.fill")
+                                .font(.system(size: 16, weight: .semibold))
+                                .foregroundStyle(HabitQuestDesignSystem.Palette.accent(for: colorScheme))
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("Edit profile name")
+                    }
+
+                    Text("Used for gentle greetings like “Good morning, \(profileDisplayName)” in Today.")
                         .font(HabitQuestDesignSystem.Typography.caption)
                         .foregroundStyle(HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme))
                 }
+
+                Spacer(minLength: 0)
             }
 
             Text("Your profile stays on this device. No account is required.")
@@ -260,16 +299,29 @@ struct ProfileFeatureView: View {
 
     private var achievementsCard: some View {
         VStack(alignment: .leading, spacing: HabitQuestDesignSystem.Spacing.md) {
-            VStack(alignment: .leading, spacing: 3) {
-                Text("Achievements")
-                    .font(HabitQuestDesignSystem.Typography.headline)
-                    .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
-                Text("Quiet acknowledgements for real progress.")
-                    .font(HabitQuestDesignSystem.Typography.callout)
-                    .foregroundStyle(HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme))
+            HStack(alignment: .top, spacing: HabitQuestDesignSystem.Spacing.md) {
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Achievements")
+                        .font(HabitQuestDesignSystem.Typography.headline)
+                        .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
+
+                    Text("Quiet acknowledgements for real progress.")
+                        .font(HabitQuestDesignSystem.Typography.callout)
+                        .foregroundStyle(HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme))
+                }
+
+                Spacer(minLength: 0)
+
+                Button(showAllAchievements ? "See fewer" : "See all") {
+                    withAnimation(reduceMotion ? .easeOut(duration: 0.12) : HabitQuestDesignSystem.Motion.standard) {
+                        showAllAchievements.toggle()
+                    }
+                }
+                .font(HabitQuestDesignSystem.Typography.caption.weight(.semibold))
+                .foregroundStyle(HabitQuestDesignSystem.Palette.accent(for: colorScheme))
             }
 
-            if achievements.isEmpty {
+            if achievementRows.isEmpty {
                 CalmEmptyStateCard(
                     icon: "medal",
                     title: "No achievements yet",
@@ -279,13 +331,288 @@ struct ProfileFeatureView: View {
                 )
             } else {
                 VStack(spacing: HabitQuestDesignSystem.Spacing.sm) {
-                    ForEach(achievements.suffix(5).reversed()) { achievement in
+                    ForEach(Array(achievementRows.prefix(showAllAchievements ? achievementRows.count : 6))) { achievement in
                         AchievementRow(achievement: achievement)
                     }
                 }
             }
         }
         .habitQuestSurface(.raised)
+    }
+
+    private var settingsCard: some View {
+        VStack(alignment: .leading, spacing: HabitQuestDesignSystem.Spacing.lg) {
+            VStack(alignment: .leading, spacing: 3) {
+                Text("Settings")
+                    .font(HabitQuestDesignSystem.Typography.headline)
+                    .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
+                Text("Calm controls for the local app experience.")
+                    .font(HabitQuestDesignSystem.Typography.callout)
+                    .foregroundStyle(HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme))
+            }
+
+            VStack(alignment: .leading, spacing: HabitQuestDesignSystem.Spacing.lg) {
+                settingsSection(
+                    title: "Notifications",
+                    subtitle: "Local reminders and quiet hours."
+                ) {
+                    if notificationAuthorizationStatus == .denied {
+                        CalmEmptyStateCard(
+                            icon: "bell.slash",
+                            title: "Notifications are off in iOS",
+                            message: "HabitQuest can keep your reminder preferences locally, but iOS is currently blocking delivery on this device.",
+                            accent: HabitQuestDesignSystem.Palette.note(for: colorScheme),
+                            supportingText: "Open Settings if you want to allow reminders again later.",
+                            primaryActionTitle: "Open Settings",
+                            primaryAction: openAppSettings
+                        )
+                    } else {
+                        Toggle("Enable reminders", isOn: remindersEnabledBinding)
+                            .font(HabitQuestDesignSystem.Typography.bodyEmphasis)
+
+                        Toggle("Promotional suggestions", isOn: promotionalNotificationsEnabledBinding)
+                            .font(HabitQuestDesignSystem.Typography.bodyEmphasis)
+
+                        VStack(spacing: HabitQuestDesignSystem.Spacing.sm) {
+                            DatePicker(
+                                "Quiet hours start",
+                                selection: quietHoursStartBinding,
+                                displayedComponents: .hourAndMinute
+                            )
+                            DatePicker(
+                                "Quiet hours end",
+                                selection: quietHoursEndBinding,
+                                displayedComponents: .hourAndMinute
+                            )
+                        }
+
+                        Text("\(notificationPreferences.disabledHabitIDs.count) habits are muted individually.")
+                            .font(HabitQuestDesignSystem.Typography.caption)
+                            .foregroundStyle(HabitQuestDesignSystem.Palette.textTertiary(for: colorScheme))
+                    }
+                }
+
+                Divider().overlay(HabitQuestDesignSystem.Palette.border(for: colorScheme))
+
+                settingsSection(
+                    title: "Appearance",
+                    subtitle: "Follow the system or use a fixed theme."
+                ) {
+                    Picker("Appearance", selection: appearanceModeBinding) {
+                        ForEach(HabitQuestAppearanceMode.allCases, id: \.self) { mode in
+                            Text(mode.title).tag(mode)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                }
+
+                Divider().overlay(HabitQuestDesignSystem.Palette.border(for: colorScheme))
+
+                settingsSection(
+                    title: "Personalization",
+                    subtitle: personalizationSubtitle
+                ) {
+                    if personalizationStore.canUsePremiumPersonalization {
+                        VStack(spacing: HabitQuestDesignSystem.Spacing.md) {
+                            premiumSelectionMenu(
+                                title: "Theme",
+                                subtitle: "Warm visual variants for the whole app.",
+                                selection: themeVariantBinding,
+                                options: HabitQuestPremiumThemeVariant.allCases.map {
+                                    .init(value: $0, label: $0.displayName, symbolName: iconName(for: $0))
+                                }
+                            )
+
+                            premiumSelectionMenu(
+                                title: "Accent palette",
+                                subtitle: "Small color shifts for a different feel.",
+                                selection: accentPaletteBinding,
+                                options: HabitQuestPremiumAccentPalette.allCases.map {
+                                    .init(value: $0, label: $0.displayName, symbolName: accentIconName(for: $0))
+                                }
+                            )
+
+                            premiumSelectionMenu(
+                                title: "Card appearance",
+                                subtitle: "Adjust the glass and framing of habit cards.",
+                                selection: cardAppearanceBinding,
+                                options: HabitQuestPremiumCardAppearance.allCases.map {
+                                    .init(value: $0, label: $0.displayName, symbolName: cardIconName(for: $0))
+                                }
+                            )
+
+                            premiumSelectionMenu(
+                                title: "Completion effects",
+                                subtitle: "Choose how completed habits settle.",
+                                selection: completionEffectBinding,
+                                options: HabitQuestPremiumCompletionEffectStyle.allCases.map {
+                                    .init(value: $0, label: $0.displayName, symbolName: completionIconName(for: $0))
+                                }
+                            )
+
+                            premiumSelectionMenu(
+                                title: "Haptic style",
+                                subtitle: "Keep feedback subtle or make it more expressive.",
+                                selection: hapticStyleBinding,
+                                options: HabitQuestPremiumHapticStyle.allCases.map {
+                                    .init(value: $0, label: $0.displayName, symbolName: hapticIconName(for: $0))
+                                }
+                            )
+
+                            premiumSelectionMenu(
+                                title: "Sound style",
+                                subtitle: "Silent, soft, or lightly glassy.",
+                                selection: soundStyleBinding,
+                                options: HabitQuestPremiumSoundStyle.allCases.map {
+                                    .init(value: $0, label: $0.displayName, symbolName: soundIconName(for: $0))
+                                }
+                            )
+
+                            premiumSelectionMenu(
+                                title: "Progression cosmetics",
+                                subtitle: "Tone the progression language up or down.",
+                                selection: progressionCosmeticBinding,
+                                options: HabitQuestProgressionCosmeticStyle.allCases.map {
+                                    .init(value: $0, label: $0.displayName, symbolName: progressionIconName(for: $0))
+                                }
+                            )
+
+                            VStack(alignment: .leading, spacing: HabitQuestDesignSystem.Spacing.sm) {
+                                Text("App icon")
+                                    .font(HabitQuestDesignSystem.Typography.bodyEmphasis)
+                                    .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
+                                Text("Choose an alternate icon and apply it when supported on this device.")
+                                    .font(HabitQuestDesignSystem.Typography.caption)
+                                    .foregroundStyle(HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme))
+
+                                premiumSelectionMenu(
+                                    title: "Icon",
+                                    subtitle: "A quieter face for HabitQuest on the Home Screen.",
+                                    selection: appIconBinding,
+                                    options: HabitQuestAppIconChoice.allCases.map {
+                                        .init(value: $0, label: $0.displayName, symbolName: appIconSymbolName(for: $0))
+                                    }
+                                )
+
+                                Button {
+                                    Task {
+                                        let applied = await personalizationStore.applyAppIconIfPossible()
+                                        if applied {
+                                            showToast("App icon updated.")
+                                        } else {
+                                            statusMessage = "This device could not update the app icon."
+                                        }
+                                    }
+                                } label: {
+                                    Label("Apply app icon", systemImage: "app.badge")
+                                }
+                                .habitQuestGlassButtonStyle()
+                            }
+                        }
+                    } else {
+                        VStack(spacing: HabitQuestDesignSystem.Spacing.md) {
+                            PremiumFeaturePreviewCard(
+                                entitlementService: environment.premiumEntitlementService,
+                                descriptor: PremiumFeature.premiumThemes.gateDescriptor(
+                                    origin: .profile,
+                                    entryPoint: "Premium theme personalization"
+                                ),
+                                actionTitle: "Preview themes",
+                                onOpenGate: { descriptor in
+                                    premiumFeatureGateDescriptor = descriptor
+                                }
+                            ) {
+                                PremiumThemePreviewView()
+                            }
+
+                            PremiumFeaturePreviewCard(
+                                entitlementService: environment.premiumEntitlementService,
+                                descriptor: PremiumFeature.premiumAppIcons.gateDescriptor(
+                                    origin: .profile,
+                                    entryPoint: "Premium app icon personalization"
+                                ),
+                                actionTitle: "Preview icons",
+                                onOpenGate: { descriptor in
+                                    premiumFeatureGateDescriptor = descriptor
+                                }
+                            ) {
+                                PremiumIconPreviewView()
+                            }
+
+                            PremiumFeaturePreviewCard(
+                                entitlementService: environment.premiumEntitlementService,
+                                descriptor: PremiumFeature.advancedGamification.gateDescriptor(
+                                    origin: .profile,
+                                    entryPoint: "Premium personalization effects"
+                                ),
+                                actionTitle: "Preview effects",
+                                onOpenGate: { descriptor in
+                                    premiumFeatureGateDescriptor = descriptor
+                                }
+                            ) {
+                                PremiumGamificationPreviewView()
+                            }
+
+                            Text("Any saved Premium personalization stays stored locally and becomes active again if Premium returns.")
+                                .font(HabitQuestDesignSystem.Typography.caption)
+                                .foregroundStyle(HabitQuestDesignSystem.Palette.textTertiary(for: colorScheme))
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                }
+
+                Divider().overlay(HabitQuestDesignSystem.Palette.border(for: colorScheme))
+
+                settingsSection(
+                    title: "Data management",
+                    subtitle: "Export, delete, or replay onboarding."
+                ) {
+                    Button {
+                        Task { await exportLocalData() }
+                    } label: {
+                        Label("Export local data", systemImage: "square.and.arrow.up")
+                    }
+                    .habitQuestGlassButtonStyle(prominent: true)
+                    .disabled(isPerformingDataAction)
+
+                    Button(role: .destructive) {
+                        isPresentingDeleteConfirmation = true
+                    } label: {
+                        Label("Delete local data", systemImage: "trash")
+                    }
+                    .habitQuestGlassButtonStyle()
+                    .disabled(isPerformingDataAction)
+
+                    Button {
+                        onReplayOnboarding()
+                    } label: {
+                        Label("Replay onboarding", systemImage: "arrow.counterclockwise")
+                    }
+                    .habitQuestGlassButtonStyle()
+                }
+            }
+        }
+        .habitQuestSurface(.raised)
+    }
+
+    private var footerFinePrint: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Your data stays on this device unless you export it.")
+                .font(HabitQuestDesignSystem.Typography.caption)
+                .foregroundStyle(HabitQuestDesignSystem.Palette.textTertiary(for: colorScheme))
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text("Accessibility: Reduce Motion, Dynamic Type, and large tap targets are supported.")
+                .font(HabitQuestDesignSystem.Typography.caption)
+                .foregroundStyle(HabitQuestDesignSystem.Palette.textTertiary(for: colorScheme))
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text("App information: Version \(appVersionString) · Build \(appBuildString) · Storage: Local on-device")
+                .font(HabitQuestDesignSystem.Typography.caption)
+                .foregroundStyle(HabitQuestDesignSystem.Palette.textTertiary(for: colorScheme))
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(.horizontal, HabitQuestDesignSystem.Spacing.xs)
     }
 
     private var notificationCard: some View {
@@ -463,7 +790,11 @@ struct ProfileFeatureView: View {
                         Button {
                             Task {
                                 let applied = await personalizationStore.applyAppIconIfPossible()
-                                statusMessage = applied ? "App icon updated." : "This device could not update the app icon."
+                                if applied {
+                                    showToast("App icon updated.")
+                                } else {
+                                    statusMessage = "This device could not update the app icon."
+                                }
                             }
                         } label: {
                             Label("Apply app icon", systemImage: "app.badge")
@@ -668,16 +999,29 @@ struct ProfileFeatureView: View {
     }
 
     private var premiumCard: some View {
-        VStack(alignment: .leading, spacing: HabitQuestDesignSystem.Spacing.md) {
-            VStack(alignment: .leading, spacing: 3) {
-                Text("Premium")
-                    .font(HabitQuestDesignSystem.Typography.headline)
-                    .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
-                Text(premiumSubtitle)
-                    .font(HabitQuestDesignSystem.Typography.callout)
-                    .foregroundStyle(HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme))
-                    .fixedSize(horizontal: false, vertical: true)
-            }
+        VStack(alignment: .leading, spacing: HabitQuestDesignSystem.Spacing.sm) {
+            HStack(alignment: .top, spacing: HabitQuestDesignSystem.Spacing.md) {
+                Circle()
+                    .fill(HabitQuestDesignSystem.Palette.accentSoft(for: colorScheme).opacity(0.65))
+                    .frame(width: 40, height: 40)
+                    .overlay(
+                        Image(systemName: "sparkles")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundStyle(HabitQuestDesignSystem.Palette.accent(for: colorScheme))
+                    )
+
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Premium")
+                        .font(HabitQuestDesignSystem.Typography.bodyEmphasis)
+                        .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
+
+                    Text(premiumSubtitle)
+                        .font(HabitQuestDesignSystem.Typography.caption)
+                        .foregroundStyle(HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                Spacer(minLength: 0)
 
                 Button {
                     if environment.premiumEntitlementService.accessState.isPremiumOrTrial {
@@ -691,27 +1035,25 @@ struct ProfileFeatureView: View {
                 } label: {
                     Label(premiumActionTitle, systemImage: "sparkles")
                 }
-            .habitQuestGlassButtonStyle(prominent: true)
+                .habitQuestGlassButtonStyle()
+            }
 
             if environment.premiumEntitlementService.accessState.isPremiumOrTrial {
                 HStack(spacing: HabitQuestDesignSystem.Spacing.sm) {
                     statusPill(
                         title: premiumStatusTitle,
+                        icon: "sparkles",
                         accent: HabitQuestDesignSystem.Palette.accent(for: colorScheme)
                     )
 
                     if environment.premiumEntitlementService.subscriptionStatus?.isActiveTrial == true {
                         statusPill(
                             title: "7-day trial",
+                            icon: "hourglass",
                             accent: HabitQuestDesignSystem.Palette.note(for: colorScheme)
                         )
                     }
                 }
-            } else {
-                Text(premiumSubtitle)
-                    .font(HabitQuestDesignSystem.Typography.caption)
-                    .foregroundStyle(HabitQuestDesignSystem.Palette.textTertiary(for: colorScheme))
-                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .habitQuestSurface(.raised)
@@ -776,8 +1118,51 @@ struct ProfileFeatureView: View {
         .habitQuestSurface(.raised)
     }
 
-    private var displayInitials: String {
+    private func settingsSection<Content: View>(
+        title: String,
+        subtitle: String,
+        @ViewBuilder content: () -> Content
+    ) -> some View {
+        VStack(alignment: .leading, spacing: HabitQuestDesignSystem.Spacing.sm) {
+            VStack(alignment: .leading, spacing: 3) {
+                Text(title)
+                    .font(HabitQuestDesignSystem.Typography.bodyEmphasis)
+                    .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
+                Text(subtitle)
+                    .font(HabitQuestDesignSystem.Typography.caption)
+                    .foregroundStyle(HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            content()
+        }
+    }
+
+    private var profileDisplayName: String {
         let trimmed = displayName.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.isEmpty || trimmed == "Local member" {
+            let alias = profileAlias.trimmingCharacters(in: .whitespacesAndNewlines)
+            return alias.isEmpty ? "Stillwater" : alias
+        }
+
+        return trimmed
+    }
+
+    private var profileAvatarSymbol: String {
+        let trimmed = profileAvatarSymbolName.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? "leaf.fill" : trimmed
+    }
+
+    private var profileAvatarImage: UIImage? {
+        guard !profileAvatarImageData.isEmpty else {
+            return nil
+        }
+
+        return UIImage(data: profileAvatarImageData)
+    }
+
+    private var displayInitials: String {
+        let trimmed = profileDisplayName.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else {
             return "HQ"
         }
@@ -785,6 +1170,52 @@ struct ProfileFeatureView: View {
         let pieces = trimmed.split(separator: " ").prefix(2)
         let initials = pieces.compactMap { $0.first }.map(String.init).joined()
         return initials.isEmpty ? "HQ" : initials.uppercased()
+    }
+
+    private var achievementCatalogDefinitions: [HabitAchievementDefinition] {
+        HabitAchievementCatalog.definitions(for: habits)
+    }
+
+    private var achievementRows: [AchievementRowModel] {
+        let earnedByID = Dictionary(uniqueKeysWithValues: achievements.map { ($0.id, $0) })
+        let rows = achievementCatalogDefinitions.map { definition -> AchievementRowModel in
+            if let earned = earnedByID[definition.id] {
+                return AchievementRowModel(
+                    id: definition.id,
+                    title: definition.title,
+                    detail: definition.detail,
+                    symbolName: definition.symbolName,
+                    isEarned: true,
+                    earnedAt: earned.earnedAt
+                )
+            }
+
+            return AchievementRowModel(
+                id: definition.id,
+                title: definition.title,
+                detail: definition.detail,
+                symbolName: definition.symbolName,
+                isEarned: false,
+                earnedAt: nil
+            )
+        }
+
+        return rows.sorted {
+            if $0.isEarned != $1.isEarned {
+                return $0.isEarned && !$1.isEarned
+            }
+
+            switch ($0.earnedAt, $1.earnedAt) {
+            case let (lhs?, rhs?):
+                return lhs > rhs
+            case (nil, _?):
+                return false
+            case (_?, nil):
+                return true
+            default:
+                return $0.id < $1.id
+            }
+        }
     }
 
     private var appearanceModeBinding: Binding<HabitQuestAppearanceMode> {
@@ -984,6 +1415,73 @@ struct ProfileFeatureView: View {
         }
     }
 
+    private func beginEditingProfileIdentity() {
+        draftDisplayName = profileDisplayName
+        draftAvatarSymbolName = profileAvatarSymbol
+        draftAvatarImageData = profileAvatarImageData
+        isPresentingProfileEditor = true
+    }
+
+    private func saveProfileIdentity() {
+        let trimmedName = draftDisplayName.trimmingCharacters(in: .whitespacesAndNewlines)
+        displayName = trimmedName.isEmpty ? "" : trimmedName
+
+        let trimmedAvatar = draftAvatarSymbolName.trimmingCharacters(in: .whitespacesAndNewlines)
+        profileAvatarSymbolName = trimmedAvatar.isEmpty ? randomProfileAvatarSymbol() : trimmedAvatar
+        profileAvatarImageData = draftAvatarImageData
+
+        isPresentingProfileEditor = false
+        showToast("Profile updated.")
+    }
+
+    private func ensureProfileIdentityDefaults() {
+        if profileAlias.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            profileAlias = randomProfileAlias()
+        }
+
+        if profileAvatarSymbolName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            profileAvatarSymbolName = randomProfileAvatarSymbol()
+        }
+    }
+
+    private func randomProfileAlias() -> String {
+        let aliases = [
+            "Stillwater Bloom",
+            "Quiet Meadow",
+            "Moss Lantern",
+            "Soft Cedar",
+            "Moonlit Stream",
+            "Breezy Lotus",
+            "Golden Willow",
+            "Calm Harbor",
+            "Dawn Pebble",
+            "Hush Bloom",
+            "Serene Grove",
+            "Cloud Harbor",
+            "Gentle Tide",
+            "Drift Meadow",
+            "Warm Spruce",
+            "Lumen Field"
+        ]
+
+        return aliases.randomElement() ?? "Stillwater Bloom"
+    }
+
+    private func randomProfileAvatarSymbol() -> String {
+        let symbols = [
+            "leaf.fill",
+            "moon.stars.fill",
+            "sparkles",
+            "sunrise.fill",
+            "drop.fill",
+            "wind",
+            "cloud.sun.fill",
+            "water.waves"
+        ]
+
+        return symbols.randomElement() ?? "leaf.fill"
+    }
+
     private var appVersionString: String {
         let info = Bundle.main.infoDictionary
         let shortVersion = info?["CFBundleShortVersionString"] as? String ?? "1.0"
@@ -1090,6 +1588,7 @@ struct ProfileFeatureView: View {
                 calendar: calendar
             )
 
+            self.habits = habits
             progressionSummary = environment.habitProgressionCalculator.summary(from: progression)
             achievements = try environment.achievementService.loadAchievements()
             notificationPreferences = try environment.notificationPreferencesStore.loadPreferences()
@@ -1109,7 +1608,9 @@ struct ProfileFeatureView: View {
                 currentMomentum: report.momentumSummary.currentMomentum,
                 completionRate: report.completionRate
             )
+            statusMessage = nil
         } catch {
+            habits = []
             progressionSummary = environment.habitProgressionCalculator.summary(from: .default)
             achievements = []
             statistics = .empty
@@ -1135,11 +1636,11 @@ struct ProfileFeatureView: View {
 
         do {
             let exportURL = try environment.localDataManagementService.exportSnapshot(
-                profileName: displayName,
+                profileName: profileDisplayName,
                 appearanceMode: appearanceModeBinding.wrappedValue
             )
             exportItem = ProfileExportItem(url: exportURL)
-            statusMessage = "Local export ready."
+            showToast("Local export ready.")
         } catch {
             statusMessage = "Local export could not be created."
         }
@@ -1152,16 +1653,38 @@ struct ProfileFeatureView: View {
 
         do {
             try environment.localDataManagementService.deleteAllLocalData()
-            displayName = "Local member"
+            displayName = ""
+            profileAlias = ""
+            profileAvatarSymbolName = ""
+            profileAvatarImageData = Data()
             appearanceModeRaw = HabitQuestAppearanceMode.system.rawValue
             hasCompletedOnboarding = false
             notificationPreferences = .default
             progressionSummary = environment.habitProgressionCalculator.summary(from: .default)
             achievements = []
             statistics = .empty
-            statusMessage = "Local data was deleted."
+            habits = []
+            showToast("Local data was deleted.")
         } catch {
             statusMessage = "Local data could not be deleted."
+        }
+    }
+
+    private func showToast(_ message: String) {
+        toastDismissTask?.cancel()
+        statusMessage = nil
+        withAnimation(reduceMotion ? .easeOut(duration: 0.12) : HabitQuestDesignSystem.Motion.standard) {
+            toastMessage = message
+        }
+
+        toastDismissTask = Task {
+            try? await Task.sleep(nanoseconds: 2_400_000_000)
+            guard !Task.isCancelled else { return }
+            await MainActor.run {
+                withAnimation(reduceMotion ? .easeOut(duration: 0.12) : HabitQuestDesignSystem.Motion.standard) {
+                    toastMessage = nil
+                }
+            }
         }
     }
 
@@ -1216,16 +1739,236 @@ struct ProfileFeatureView: View {
         .habitQuestSurface(.base)
     }
 
-    private func statusPill(title: String, accent: Color) -> some View {
-        Text(title)
-            .font(HabitQuestDesignSystem.Typography.caption.weight(.semibold))
-            .foregroundStyle(accent)
-            .padding(.horizontal, HabitQuestDesignSystem.Spacing.md)
-            .padding(.vertical, 8)
-            .background(
-                Capsule(style: .continuous)
-                    .fill(accent.opacity(0.12))
-            )
+    private func statusPill(title: String, icon: String, accent: Color) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: icon)
+                .font(.system(size: 10, weight: .semibold))
+            Text(title)
+        }
+        .font(HabitQuestDesignSystem.Typography.caption.weight(.semibold))
+        .foregroundStyle(accent)
+        .padding(.horizontal, HabitQuestDesignSystem.Spacing.md)
+        .padding(.vertical, 7)
+        .background(
+            Capsule(style: .continuous)
+                .fill(accent.opacity(0.1))
+                .overlay(
+                    Capsule(style: .continuous)
+                        .stroke(accent.opacity(0.2), lineWidth: 1)
+                )
+        )
+    }
+
+    private var avatarBadgeView: some View {
+        ZStack(alignment: .bottomTrailing) {
+            Circle()
+                .fill(HabitQuestDesignSystem.Palette.accentSoft(for: colorScheme).opacity(0.75))
+                .frame(width: 64, height: 64)
+                .overlay(
+                    Circle()
+                        .stroke(HabitQuestDesignSystem.Palette.border(for: colorScheme), lineWidth: 1)
+                )
+
+            if let profileAvatarImage {
+                Image(uiImage: profileAvatarImage)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 64, height: 64)
+                    .clipShape(Circle())
+            } else {
+                Image(systemName: profileAvatarSymbol)
+                    .font(.system(size: 22, weight: .semibold))
+                    .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
+            }
+
+            Circle()
+                .fill(HabitQuestDesignSystem.Palette.surface(for: colorScheme))
+                .frame(width: 22, height: 22)
+                .overlay(
+                    Image(systemName: "pencil")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme))
+                )
+                .offset(x: 2, y: 2)
+        }
+    }
+}
+
+private struct ProfileIdentityEditorView: View {
+    @Binding var displayName: String
+    @Binding var avatarSymbolName: String
+    @Binding var avatarImageData: Data
+
+    let onSave: () -> Void
+    let onCancel: () -> Void
+
+    @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var avatarSelection: PhotosPickerItem?
+    @State private var avatarOptions: [String] = [
+        "leaf.fill",
+        "moon.stars.fill",
+        "sparkles",
+        "sunrise.fill",
+        "drop.fill",
+        "wind",
+        "cloud.sun.fill",
+        "water.waves",
+        "tree.fill",
+        "sun.max.fill",
+        "hands.sparkles"
+    ]
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: HabitQuestDesignSystem.Spacing.lg) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Edit profile")
+                            .font(HabitQuestDesignSystem.Typography.title)
+                            .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
+
+                        Text("Choose a name, icon, or photo for your local profile.")
+                            .font(HabitQuestDesignSystem.Typography.callout)
+                            .foregroundStyle(HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme))
+                    }
+
+                    VStack(alignment: .leading, spacing: HabitQuestDesignSystem.Spacing.sm) {
+                        Text("Profile image")
+                            .font(HabitQuestDesignSystem.Typography.bodyEmphasis)
+                            .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
+
+                        Text("Choose a photo from Photos or keep a gentle icon.")
+                            .font(HabitQuestDesignSystem.Typography.caption)
+                            .foregroundStyle(HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme))
+
+                        HStack(spacing: HabitQuestDesignSystem.Spacing.sm) {
+                            PhotosPicker(selection: $avatarSelection, matching: .images) {
+                                Label("Choose photo", systemImage: "photo")
+                            }
+                            .habitQuestGlassButtonStyle(prominent: true)
+
+                            if !avatarImageData.isEmpty {
+                                Button("Remove photo") {
+                                    avatarImageData = Data()
+                                }
+                                .habitQuestGlassButtonStyle()
+                            }
+                        }
+
+                        if let image = UIImage(data: avatarImageData) {
+                            Image(uiImage: image)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 84, height: 84)
+                                .clipShape(RoundedRectangle(cornerRadius: HabitQuestDesignSystem.Radius.lg, style: .continuous))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: HabitQuestDesignSystem.Radius.lg, style: .continuous)
+                                        .stroke(HabitQuestDesignSystem.Palette.border(for: colorScheme), lineWidth: 1)
+                                )
+                                .accessibilityHidden(true)
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: HabitQuestDesignSystem.Spacing.sm) {
+                        Text("Display name")
+                            .font(HabitQuestDesignSystem.Typography.bodyEmphasis)
+                            .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
+
+                        TextField("Display name", text: $displayName)
+                            .textInputAutocapitalization(.words)
+                            .autocorrectionDisabled()
+                            .habitQuestInputField()
+                    }
+
+                    VStack(alignment: .leading, spacing: HabitQuestDesignSystem.Spacing.sm) {
+                        Text("Icon")
+                            .font(HabitQuestDesignSystem.Typography.bodyEmphasis)
+                            .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
+
+                        Text("Tap an icon if you want a symbol instead of a photo.")
+                            .font(HabitQuestDesignSystem.Typography.caption)
+                            .foregroundStyle(HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme))
+
+                        LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: HabitQuestDesignSystem.Spacing.sm), count: 4), spacing: HabitQuestDesignSystem.Spacing.sm) {
+                            ForEach(avatarOptions, id: \.self) { symbol in
+                                Button {
+                                    avatarImageData = Data()
+                                    avatarSymbolName = symbol
+                                } label: {
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: HabitQuestDesignSystem.Radius.lg, style: .continuous)
+                                            .fill(
+                                                symbol == avatarSymbolName && avatarImageData.isEmpty
+                                                ? HabitQuestDesignSystem.Palette.accentSoft(for: colorScheme).opacity(0.35)
+                                                : HabitQuestDesignSystem.Palette.surface(for: colorScheme)
+                                            )
+                                            .frame(height: 58)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: HabitQuestDesignSystem.Radius.lg, style: .continuous)
+                                                    .stroke(
+                                                        symbol == avatarSymbolName && avatarImageData.isEmpty
+                                                        ? HabitQuestDesignSystem.Palette.accent(for: colorScheme)
+                                                        : HabitQuestDesignSystem.Palette.border(for: colorScheme),
+                                                        lineWidth: symbol == avatarSymbolName && avatarImageData.isEmpty ? 1.5 : 1
+                                                    )
+                                            )
+
+                                        Image(systemName: symbol)
+                                            .font(.system(size: 18, weight: .semibold))
+                                            .foregroundStyle(
+                                                symbol == avatarSymbolName && avatarImageData.isEmpty
+                                                ? HabitQuestDesignSystem.Palette.accent(for: colorScheme)
+                                                : HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme)
+                                            )
+                                    }
+                                }
+                                .buttonStyle(.plain)
+                                .accessibilityLabel(Text(symbol.replacingOccurrences(of: ".", with: " ")))
+                            }
+                        }
+                    }
+
+                    Text("Your profile stays local and can be changed anytime.")
+                        .font(HabitQuestDesignSystem.Typography.caption)
+                        .foregroundStyle(HabitQuestDesignSystem.Palette.textTertiary(for: colorScheme))
+                }
+                .padding(.horizontal, HabitQuestDesignSystem.Spacing.pageHorizontal)
+                .padding(.top, HabitQuestDesignSystem.Spacing.lg)
+                .padding(.bottom, HabitQuestDesignSystem.Spacing.xl)
+            }
+            .background(HabitQuestScreenBackground())
+            .navigationTitle("Profile")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        onCancel()
+                        dismiss()
+                    }
+                }
+
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") {
+                        onSave()
+                        dismiss()
+                    }
+                    .fontWeight(.semibold)
+                }
+            }
+            .onChange(of: avatarSelection) { _, newItem in
+                guard let newItem else { return }
+
+                Task {
+                    if let data = try? await newItem.loadTransferable(type: Data.self) {
+                        await MainActor.run {
+                            avatarImageData = data
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -1301,33 +2044,92 @@ private struct MetricPair: View {
     }
 }
 
+private struct AchievementRowModel: Identifiable {
+    let id: String
+    let title: String
+    let detail: String
+    let symbolName: String
+    let isEarned: Bool
+    let earnedAt: Date?
+}
+
 private struct AchievementRow: View {
-    let achievement: HabitAchievement
+    let achievement: AchievementRowModel
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         HStack(spacing: HabitQuestDesignSystem.Spacing.md) {
             Circle()
-                .fill(HabitQuestDesignSystem.Palette.accentSoft(for: colorScheme).opacity(0.55))
+                .fill(achievement.isEarned ? HabitQuestDesignSystem.Palette.accentSoft(for: colorScheme).opacity(0.55) : HabitQuestDesignSystem.Palette.surface(for: colorScheme))
                 .frame(width: 38, height: 38)
+                .overlay(
+                    Circle()
+                        .stroke(
+                            achievement.isEarned ? HabitQuestDesignSystem.Palette.border(for: colorScheme) : HabitQuestDesignSystem.Palette.border(for: colorScheme).opacity(0.8),
+                            lineWidth: 1
+                        )
+                )
                 .overlay(
                     Image(systemName: achievement.symbolName)
                         .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
+                        .foregroundStyle(achievement.isEarned ? HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme) : HabitQuestDesignSystem.Palette.textTertiary(for: colorScheme))
                 )
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(achievement.title)
                     .font(HabitQuestDesignSystem.Typography.bodyEmphasis)
-                    .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
+                    .foregroundStyle(achievement.isEarned ? HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme) : HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme))
                 Text(achievement.detail)
                     .font(HabitQuestDesignSystem.Typography.caption)
-                    .foregroundStyle(HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme))
+                    .foregroundStyle(achievement.isEarned ? HabitQuestDesignSystem.Palette.textSecondary(for: colorScheme) : HabitQuestDesignSystem.Palette.textTertiary(for: colorScheme))
+            }
+
+            if !achievement.isEarned {
+                Text("Locked")
+                    .font(HabitQuestDesignSystem.Typography.caption.weight(.semibold))
+                    .foregroundStyle(HabitQuestDesignSystem.Palette.textTertiary(for: colorScheme))
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background(
+                        Capsule(style: .continuous)
+                            .fill(HabitQuestDesignSystem.Palette.surface(for: colorScheme))
+                    )
             }
 
             Spacer(minLength: 0)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .opacity(achievement.isEarned ? 1 : 0.45)
+    }
+}
+
+private struct ProfileToast: View {
+    let message: String
+
+    @Environment(\.colorScheme) private var colorScheme
+
+    var body: some View {
+        HStack(spacing: HabitQuestDesignSystem.Spacing.sm) {
+            Image(systemName: "checkmark.circle.fill")
+                .foregroundStyle(HabitQuestDesignSystem.Palette.accent(for: colorScheme))
+
+            Text(message)
+                .font(HabitQuestDesignSystem.Typography.callout.weight(.semibold))
+                .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
+
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, HabitQuestDesignSystem.Spacing.md)
+        .padding(.vertical, HabitQuestDesignSystem.Spacing.sm)
+        .background(
+            Capsule(style: .continuous)
+                .fill(.ultraThinMaterial)
+                .overlay(
+                    Capsule(style: .continuous)
+                        .stroke(HabitQuestDesignSystem.Palette.border(for: colorScheme), lineWidth: 1)
+                )
+        )
+        .shadow(color: .black.opacity(0.12), radius: 16, x: 0, y: 8)
     }
 }
 

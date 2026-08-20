@@ -19,6 +19,7 @@ struct TodayDeckView: View {
     @State private var isSavingAction = false
     @State private var inspectionContext: TodayHabitInspectionContext?
     @State private var programmaticSwipeRequest: TodayProgrammaticSwipeRequest?
+    @State private var streakFreezeNotice: String?
 
     init(onOpenHabits: @escaping () -> Void = {}) {
         self.onOpenHabits = onOpenHabits
@@ -30,6 +31,9 @@ struct TodayDeckView: View {
 
             ScrollView {
                 VStack(spacing: HabitQuestDesignSystem.Spacing.sm) {
+                    if let streakFreezeNotice {
+                        streakFreezeNoticeCard(message: streakFreezeNotice)
+                    }
                     headerSection
                     deckSection
                     if showsSwipeActions {
@@ -59,6 +63,9 @@ struct TodayDeckView: View {
             Task { await reloadDeck() }
         }
         .onReceive(NotificationCenter.default.publisher(for: .NSSystemTimeZoneDidChange)) { _ in
+            Task { await reloadDeck() }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .habitQuestStreakFreezeDidChange)) { _ in
             Task { await reloadDeck() }
         }
     }
@@ -521,6 +528,7 @@ struct TodayDeckView: View {
                 upTo: now,
                 calendar: calendar
             )
+            let freezeNotice = environment.streakFreezeService.noticeMessage()
 
             try environment.dailyHabitStateStore.saveStates(
                 mergedStates(existing: persistedStates, snapshotStates: snapshot.states, calendar: calendar)
@@ -531,14 +539,35 @@ struct TodayDeckView: View {
             self.persistedStates = persistedStates
             orderedStates = snapshot.states
             self.momentumSummary = momentumSummary
+            streakFreezeNotice = freezeNotice
             loadErrorMessage = nil
         } catch {
             habitsByID = [:]
             persistedStates = []
             orderedStates = []
             momentumSummary = nil
+            streakFreezeNotice = nil
             loadErrorMessage = error.localizedDescription
         }
+    }
+
+    private func streakFreezeNoticeCard(message: String) -> some View {
+        VStack(alignment: .leading, spacing: HabitQuestDesignSystem.Spacing.xs) {
+            HStack(spacing: HabitQuestDesignSystem.Spacing.xs) {
+                Image(systemName: "flame.fill")
+                    .font(.system(size: 13, weight: .semibold))
+                Text("Streak reset")
+                    .font(HabitQuestDesignSystem.Typography.caption.weight(.semibold))
+            }
+            .foregroundStyle(HabitQuestDesignSystem.Palette.note(for: colorScheme))
+
+            Text(message)
+                .font(HabitQuestDesignSystem.Typography.callout)
+                .foregroundStyle(HabitQuestDesignSystem.Palette.textPrimary(for: colorScheme))
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .habitQuestSurface(.raised)
     }
 
     private func computeCurrentStreak() -> Int {
@@ -768,6 +797,7 @@ private struct TodayDeckCardView: View {
     @Environment(\.colorScheme) private var colorScheme
     @State private var dragOffset: CGSize = .zero
     @State private var isDismissed = false
+    @State private var isResolving = false
     @State private var hasCrossedThreshold = false
     @State private var isDragging = false
     @State private var idleHintOffset: CGFloat = 0
@@ -800,6 +830,7 @@ private struct TodayDeckCardView: View {
             .rotationEffect(.degrees(isTopCard && !reduceMotion ? Double((dragOffset.width + idleHintOffset) / 20) : 0))
             .scaleEffect(isTopCard ? 1 : 0.98)
             .opacity(isDismissed ? 0 : 1)
+            .allowsHitTesting(!isResolving && !isDismissed)
             .animation(reduceMotion ? .easeOut(duration: 0.08) : HabitQuestDesignSystem.Motion.card, value: dragOffset)
             .contentShape(RoundedRectangle(cornerRadius: HabitQuestDesignSystem.Radius.xl, style: .continuous))
             .accessibilityElement(children: .ignore)
@@ -1005,8 +1036,8 @@ private struct TodayDeckCardView: View {
     }
 
     private func commit(direction: TodaySwipeDirection, completion: (() -> Void)?) {
-        guard !isDismissed else { return }
-        isDismissed = true
+        guard !isDismissed, !isResolving else { return }
+        isResolving = true
 
         let verticalOffset = dragOffset.height * 0.20
         let target = CGSize(
@@ -1020,6 +1051,10 @@ private struct TodayDeckCardView: View {
 
         Task { @MainActor in
             try? await Task.sleep(nanoseconds: reduceMotion ? 60_000_000 : 110_000_000)
+            withAnimation(reduceMotion ? .easeOut(duration: 0.08) : HabitQuestDesignSystem.Motion.card) {
+                isDismissed = true
+            }
+            isResolving = false
             if let completion {
                 completion()
             } else {
@@ -1046,7 +1081,7 @@ private struct TodayDeckCardView: View {
     }
 
     private var idleHintTaskKey: String {
-        guard isTopCard, !isBusy, !reduceMotion, !isDismissed, !isDragging else {
+        guard isTopCard, !isBusy, !reduceMotion, !isDismissed, !isResolving, !isDragging else {
             return "inactive"
         }
 
@@ -1054,7 +1089,7 @@ private struct TodayDeckCardView: View {
     }
 
     private var programmaticSwipeTaskKey: String {
-        guard isTopCard, !isBusy, !isDismissed, !isDragging, let programmaticSwipeRequest else {
+        guard isTopCard, !isBusy, !isDismissed, !isResolving, !isDragging, let programmaticSwipeRequest else {
             return "inactive"
         }
 

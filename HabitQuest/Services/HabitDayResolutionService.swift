@@ -10,6 +10,9 @@ struct HabitDayResolutionService {
     let completionEventStore: any CompletionEventStoring
     let dailyHabitStateStore: any DailyHabitStateStoring
     let dailyHabitInstanceEngine: DailyHabitInstanceEngine
+    let dailyStreakCalculator: DailyStreakCalculator
+    let streakFreezeStore: any StreakFreezeStoring
+    let streakFreezeCostCalculator: StreakFreezeCostCalculator
 
     func resolveElapsedDays(upTo timestamp: Date, calendar: Calendar = .current) throws -> HabitDayResolutionResult {
         let habits = try habitRepository.fetchHabits()
@@ -61,6 +64,27 @@ struct HabitDayResolutionService {
             }
 
             resolvedStates = merge(resolvedStates, with: historicalStates, calendar: calendar)
+
+            if dayShouldReceiveStreakFreeze(
+                for: cursor,
+                historicalStates: historicalStates,
+                resolvedStatesBeforeCurrentDay: resolvedStates,
+                habits: habits,
+                completionEvents: completionEvents,
+                calendar: calendar
+            ) {
+                let opportunity = makeStreakFreezeOpportunity(
+                    for: cursor,
+                    habits: habits,
+                    states: resolvedStates,
+                    completionEvents: completionEvents,
+                    calendar: calendar,
+                    now: endOfDay
+                )
+
+                try? streakFreezeStore.recordOpportunity(opportunity)
+            }
+
             resolvedDayCount += 1
 
             guard let nextDay = calendar.date(byAdding: .day, value: 1, to: cursor) else {
@@ -98,5 +122,58 @@ struct HabitDayResolutionService {
 
     private func endOfDay(for date: Date, calendar: Calendar) -> Date {
         calendar.date(bySettingHour: 23, minute: 59, second: 59, of: calendar.startOfDay(for: date)) ?? date
+    }
+
+    private func dayShouldReceiveStreakFreeze(
+        for day: Date,
+        historicalStates: [DailyHabitState],
+        resolvedStatesBeforeCurrentDay: [DailyHabitState],
+        habits: [Habit],
+        completionEvents: [CompletionEvent],
+        calendar: Calendar
+    ) -> Bool {
+        let previousDayEnd = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: calendar.date(byAdding: .day, value: -1, to: day) ?? day) ?? day
+        let priorSummary = dailyStreakCalculator.summary(
+            for: habits,
+            states: resolvedStatesBeforeCurrentDay,
+            completionEvents: completionEvents,
+            upTo: previousDayEnd,
+            calendar: calendar
+        )
+
+        guard priorSummary.currentDailyStreak > 0 else {
+            return false
+        }
+
+        return historicalStates.contains { $0.status != .completed && $0.streakFreezeAppliedAt == nil }
+    }
+
+    private func makeStreakFreezeOpportunity(
+        for day: Date,
+        habits: [Habit],
+        states: [DailyHabitState],
+        completionEvents: [CompletionEvent],
+        calendar: Calendar,
+        now: Date
+    ) -> StreakFreezeOpportunity {
+        let previousDayEnd = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: calendar.date(byAdding: .day, value: -1, to: day) ?? day) ?? now
+        let priorSummary = dailyStreakCalculator.summary(
+            for: habits,
+            states: states.filter { calendar.startOfDay(for: $0.date) < calendar.startOfDay(for: day) },
+            completionEvents: completionEvents,
+            upTo: previousDayEnd,
+            calendar: calendar
+        )
+        let brokenDay = calendar.startOfDay(for: day)
+        let deadline = calendar.date(byAdding: .day, value: 1, to: endOfDay(for: brokenDay, calendar: calendar)) ?? now.addingTimeInterval(24 * 60 * 60)
+        let cost = streakFreezeCostCalculator.cost(for: habits)
+
+        return StreakFreezeOpportunity(
+            brokenDay: brokenDay,
+            detectedAt: now,
+            deadline: deadline,
+            baselineStreak: priorSummary.currentDailyStreak,
+            costXP: cost
+        )
     }
 }

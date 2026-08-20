@@ -14,6 +14,7 @@ struct HabitQuestEnvironment: @unchecked Sendable {
     let widgetSnapshotStore: HabitQuestWidgetSnapshotStore
     let widgetRefreshService: HabitQuestWidgetRefreshService
     let subscriptionManager: SubscriptionManager
+    let streakFreezeService: StreakFreezeService
     let habitRepository: any HabitRepository
     let habitDaySectionStore: any HabitDaySectionStoring
     let dailyHabitStateStore: any DailyHabitStateStoring
@@ -43,6 +44,7 @@ struct HabitQuestEnvironment: @unchecked Sendable {
         let progressionStore = LocalHabitProgressionStore.live()
         let achievementStore = LocalHabitAchievementStore.live()
         let habitDaySectionStore = LocalHabitDaySectionStore.live()
+        let streakFreezeStore = LocalStreakFreezeStore.live()
         let notificationPreferencesStore = LocalNotificationPreferencesStore.live()
         let dateService = SystemDateService()
         let habitRepository = LocalHabitRepository.live()
@@ -83,7 +85,18 @@ struct HabitQuestEnvironment: @unchecked Sendable {
             habitRepository: habitRepository,
             completionEventStore: completionEventStore,
             dailyHabitStateStore: dailyHabitStateStore,
-            dailyHabitInstanceEngine: dailyHabitInstanceEngine
+            dailyHabitInstanceEngine: dailyHabitInstanceEngine,
+            dailyStreakCalculator: DailyStreakCalculator(),
+            streakFreezeStore: streakFreezeStore,
+            streakFreezeCostCalculator: StreakFreezeCostCalculator()
+        )
+        let streakFreezeService = StreakFreezeService(
+            store: streakFreezeStore,
+            habitRepository: habitRepository,
+            dailyHabitStateStore: dailyHabitStateStore,
+            completionEventStore: completionEventStore,
+            progressionStore: progressionStore,
+            dateService: dateService
         )
         let localDataManagementService = HabitQuestLocalDataManagementService(
             habitRepository: habitRepository,
@@ -93,6 +106,7 @@ struct HabitQuestEnvironment: @unchecked Sendable {
             progressionStore: progressionStore,
             achievementStore: achievementStore,
             notificationPreferencesStore: notificationPreferencesStore,
+            streakFreezeStore: streakFreezeStore,
             dateService: dateService,
             dailyStreakCalculator: DailyStreakCalculator(),
             habitProgressCalculator: HabitProgressCalculator(),
@@ -130,6 +144,7 @@ struct HabitQuestEnvironment: @unchecked Sendable {
             widgetSnapshotStore: widgetSnapshotStore,
             widgetRefreshService: widgetRefreshService,
             subscriptionManager: subscriptionManager,
+            streakFreezeService: streakFreezeService,
             habitRepository: habitRepository,
             habitDaySectionStore: habitDaySectionStore,
             dailyHabitStateStore: dailyHabitStateStore,

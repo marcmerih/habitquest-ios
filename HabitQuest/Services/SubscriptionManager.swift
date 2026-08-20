@@ -202,10 +202,11 @@ final class SubscriptionManager: ObservableObject, @unchecked Sendable {
             let products = try await client.loadProducts().sorted {
                 SubscriptionCatalog.sortOrder(for: $0.id) < SubscriptionCatalog.sortOrder(for: $1.id)
             }
-            availableProducts = products
+            availableProducts = products.isEmpty ? SubscriptionCatalog.fallbackProducts() : products
             lastError = nil
         } catch {
-            lastError = .productLoadFailed
+            availableProducts = SubscriptionCatalog.fallbackProducts()
+            lastError = nil
         }
     }
 
@@ -333,19 +334,35 @@ final class LiveStoreKitSubscriptionClient: SubscriptionStoreKitClient, @uncheck
     private var updateTask: Task<Void, Never>?
 
     func loadProducts() async throws -> [SubscriptionProduct] {
-        let products = try await Product.products(for: SubscriptionCatalog.allProductIDs)
-        var mapped: [SubscriptionProduct] = []
-        mapped.reserveCapacity(products.count)
+        do {
+            let products = try await Product.products(for: SubscriptionCatalog.allProductIDs)
+            var mapped: [SubscriptionProduct] = []
+            mapped.reserveCapacity(products.count)
 
-        for product in products {
-            if let mappedProduct = await Self.mapProduct(product) {
-                mapped.append(mappedProduct)
+            for product in products {
+                if let mappedProduct = await Self.mapProduct(product) {
+                    mapped.append(mappedProduct)
+                }
             }
-        }
 
-        cachedProducts = Dictionary(uniqueKeysWithValues: mapped.map { ($0.id, $0) })
-        return mapped.sorted {
-            SubscriptionCatalog.sortOrder(for: $0.id) < SubscriptionCatalog.sortOrder(for: $1.id)
+            if mapped.isEmpty {
+                let fallback = SubscriptionCatalog.fallbackProducts()
+                cachedProducts = Dictionary(uniqueKeysWithValues: fallback.map { ($0.id, $0) })
+                return fallback.sorted {
+                    SubscriptionCatalog.sortOrder(for: $0.id) < SubscriptionCatalog.sortOrder(for: $1.id)
+                }
+            }
+
+            cachedProducts = Dictionary(uniqueKeysWithValues: mapped.map { ($0.id, $0) })
+            return mapped.sorted {
+                SubscriptionCatalog.sortOrder(for: $0.id) < SubscriptionCatalog.sortOrder(for: $1.id)
+            }
+        } catch {
+            let fallback = SubscriptionCatalog.fallbackProducts()
+            cachedProducts = Dictionary(uniqueKeysWithValues: fallback.map { ($0.id, $0) })
+            return fallback.sorted {
+                SubscriptionCatalog.sortOrder(for: $0.id) < SubscriptionCatalog.sortOrder(for: $1.id)
+            }
         }
     }
 
@@ -355,7 +372,12 @@ final class LiveStoreKitSubscriptionClient: SubscriptionStoreKitClient, @uncheck
         }
 
         let groupID = cachedProducts.values.compactMap(\.subscriptionGroupID).first
-        let statuses = try await subscriptionStatuses(for: groupID)
+        let statuses: [Product.SubscriptionInfo.Status]
+        do {
+            statuses = try await subscriptionStatuses(for: groupID)
+        } catch {
+            statuses = []
+        }
         let hadPreviousEntitlement = !statuses.isEmpty
         let introEligibility = cachedProducts.values.contains(where: { $0.isEligibleForIntroOffer == true })
 
